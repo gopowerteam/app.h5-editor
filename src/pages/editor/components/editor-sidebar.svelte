@@ -11,7 +11,15 @@
                 </div>
             {/each}
         </div>
-        <div class="flex-auto"></div>
+        <div class="widget-panel flex flex-auto flex-wrap">
+            {#each currentWidgets as widget}
+                <div
+                    class="widget bg-gray-100 hover:bg-gray-50 hover:text-blue-500 cursor-pointer">
+                    <svelte:component this="{widget.icon}" />
+                    <div class="pt-2 text-xs">{widget.label}</div>
+                </div>
+            {/each}
+        </div>
     </div>
 </template>
 
@@ -28,25 +36,42 @@
         }
     }
 }
+
+.widget-panel {
+    // background-color: rgba(100, 100, 100, 0.1);
+    .widget {
+        height: 80px;
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+
+        &:hover {
+        }
+    }
+}
 </style>
 
 <script lang="ts">
-import SettingsAdjust24 from 'carbon-icons-svelte/lib/SettingsAdjust24'
-import MediaLibrary24 from 'carbon-icons-svelte/lib/MediaLibrary24'
+import SettingsAdjust from 'carbon-icons-svelte/lib/SettingsAdjust24'
+import MediaLibrary from 'carbon-icons-svelte/lib/MediaLibrary24'
+import TextScale from 'carbon-icons-svelte/lib/TextScale20'
+import Image from 'carbon-icons-svelte/lib/Image20'
 
 let currentMenu = 'base'
+
+$: currentWidgets = widgetMenus.find((x) => x.name === currentMenu).widgets
 
 // 基础类组件
 const baseWidgets = [
     {
         label: '文字',
         event: '',
-        icon: ''
+        icon: TextScale
     },
     {
         label: '图片',
         event: '',
-        icon: ''
+        icon: Image
     }
 ]
 
@@ -57,14 +82,14 @@ const widgetMenus = [
     {
         label: '基础',
         name: 'base',
-        icon: SettingsAdjust24,
+        icon: SettingsAdjust,
         widgets: baseWidgets
     },
     {
         label: '引用',
         name: 'quote',
-        icon: MediaLibrary24,
-        wigets: baseWidgets
+        icon: MediaLibrary,
+        widgets: quoteWidgets
     }
 ]
 </script>

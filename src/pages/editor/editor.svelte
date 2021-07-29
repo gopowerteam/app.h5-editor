@@ -7,14 +7,15 @@
             <div class="editor-sidebar relative">
                 <EditorSidebar />
             </div>
+
+            <div class="editor-content relative">
+                <EditorContent />
+            </div>
             <div class="editor-tool relative">
                 <EditorTool />
             </div>
             <div class="editor-property relative">
                 <EditorProperty />
-            </div>
-            <div class="editor-content relative">
-                <EditorContent />
             </div>
         </div>
     </PageContainer>
@@ -23,12 +24,8 @@
 <style lang="less">
 .editor-container {
     display: grid;
-    grid-template-areas:
-        'sidebar tool property'
-        'sidebar content property';
-
-    grid-template-rows: 50px auto;
-    grid-template-columns: 250px auto 300px;
+    grid-template-areas: 'sidebar content tool property';
+    grid-template-columns: 220px auto 40px 300px;
 }
 
 .editor-sidebar {
@@ -52,4 +49,39 @@ import EditorSidebar from './components/editor-sidebar.svelte'
 import EditorContent from './components/editor-content.svelte'
 import EditorTool from './components/editor-tool.svelte'
 import EditorProperty from './components/editor-property.svelte'
+import { writable } from 'svelte/store'
+import { setContext } from 'svelte'
+import type { IEvent, IStage } from '@/editor/interface'
+
+const listeners = []
+
+/**
+ * 舞台数据
+ **/
+const stage = writable<IStage>({
+    // 缩放比例
+    zoom: 1
+})
+
+/**
+ * 事件中心
+ */
+const event: IEvent = {
+    emit: (event, data) => {
+        listeners
+            .filter((x) => x.event === event)
+            .forEach(({ callback }) => {
+                callback(data)
+            })
+    },
+    on: (event, callback) => {
+        listeners.push({
+            event,
+            callback
+        })
+    }
+}
+
+setContext('event', event)
+setContext('stage', stage)
 </script>

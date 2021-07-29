@@ -6,3 +6,7 @@ export enum WidgetType {
 export enum QuoteType {
     username = 'USERNAME'
 }
+
+export enum EventType {
+    zoom = 'ZOOM'
+}

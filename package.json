@@ -34,6 +34,7 @@
         "@gopowerteam/svelte-modal": "0.1.6",
         "@storeon/localstorage": "^1.4.0",
         "@storeon/svelte": "^1.0.0",
+        "konva": "^8.1.1",
         "rxjs": "^7.1.0",
         "storeon": "^3.1.4"
     }
