@@ -6,5 +6,5 @@ export interface IStage {
 
 export interface IEvent {
     on: (event: EventType, callback: (...args: any[]) => void) => void
-    emit: (event: EventType, data: any) => void
+    emit: (event: EventType, data?: any) => void
 }

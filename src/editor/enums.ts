@@ -8,5 +8,6 @@ export enum QuoteType {
 }
 
 export enum EventType {
-    zoom = 'ZOOM'
+    zoom = 'ZOOM',
+    create = 'CREATE'
 }

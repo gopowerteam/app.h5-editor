@@ -19,6 +19,7 @@
         "postcss": "^8.3.5",
         "prettier": "^2.3.1",
         "prettier-plugin-svelte": "^2.3.1",
+        "reflect-metadata": "^0.1.13",
         "svelte": "^3.37.0",
         "svelte-check": "^2.1.0",
         "svelte-preprocess": "^4.7.2",
@@ -34,6 +35,7 @@
         "@gopowerteam/svelte-modal": "0.1.6",
         "@storeon/localstorage": "^1.4.0",
         "@storeon/svelte": "^1.0.0",
+        "class-transformer": "^0.4.0",
         "konva": "^8.1.1",
         "rxjs": "^7.1.0",
         "storeon": "^3.1.4"

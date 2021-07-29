@@ -10,9 +10,12 @@
 </style>
 
 <script lang="ts">
-import { EventType } from '@/editor/enums'
+import { createTextWidget } from '@/editor/data/text-widget.data'
+
+import { EventType, WidgetType } from '@/editor/enums'
 
 import type { IEvent } from '@/editor/interface'
+import { renderTextWidget } from '@/editor/render/text.render'
 import { Content } from 'carbon-components-svelte'
 
 import Konva from 'konva'
@@ -60,35 +63,35 @@ function createBackground() {
     contentLayer.add(background)
 }
 
-function createTextWidget() {
-    const text = new Konva.Text({
-        x: 0,
-        y: 0,
-        text: 'as大赛阿塞阀赛后',
-        fontSize: 50,
-        fill: 'green'
-    })
+// function createTextWidget() {
+//     const text = new Konva.Text({
+//         x: 0,
+//         y: 0,
+//         text: 'as大赛阿塞阀赛后',
+//         fontSize: 50,
+//         fill: 'green'
+//     })
 
-    text.draggable(true)
+//     text.draggable(true)
 
-    text.on('mouseenter', (e) => {
-        const transformer = getSelector(text)
+//     text.on('mouseenter', (e) => {
+//         const transformer = getSelector(text)
 
-        if (!transformer) {
-            createSelector(e.target)
-        }
-    })
+//         if (!transformer) {
+//             createSelector(e.target)
+//         }
+//     })
 
-    text.on('mouseout', (e) => {
-        const transformer = getSelector(text)
+//     text.on('mouseout', (e) => {
+//         const transformer = getSelector(text)
 
-        if (transformer && !transformer.resizeEnabled()) {
-            transformer.destroy()
-        }
-    })
+//         if (transformer && !transformer.resizeEnabled()) {
+//             transformer.destroy()
+//         }
+//     })
 
-    contentLayer.add(text)
-}
+//     contentLayer.add(text)
+// }
 
 /**
  * 获取选择器
@@ -203,14 +206,18 @@ function eventSetup() {
         contentLayer.scaleY(scale)
         resizeLayer()
     })
+
+    source.event.on(EventType.create, (widgetType: WidgetType) => {
+        const text = createTextWidget()
+        const node = renderTextWidget(text)
+        contentLayer.add(node)
+    })
 }
 
 onMount(() => {
     createCanvas()
     createBackground()
     setupSelector()
-
-    createTextWidget()
 
     eventSetup()
 
