@@ -44,7 +44,7 @@ export function createStage(container) {
     })
 
     // 创建图层实例
-    const { content, background } = createLayers(stage, width, height)
+    const { content, background } = createLayers(stage)
 
     // 添加图层
     stage.add(content)
@@ -65,7 +65,9 @@ export function createStage(container) {
  * @param width
  * @param height
  */
-function createLayers(stage: Konva.Stage, width: number, height: number) {
+function createLayers(stage: Konva.Stage) {
+    // 获取图层尺寸
+    const { width, height } = appConfig.editor.content
     // 创建内容布局
     const contentLayer = new Konva.Layer({
         name: 'content',
