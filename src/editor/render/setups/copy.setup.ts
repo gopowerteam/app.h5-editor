@@ -1,7 +1,6 @@
 import { cloneWidget } from '@/editor/data'
 import { store } from '@/store'
 import type Konva from 'konva'
-import { addWidget, renderWidget } from '..'
 
 // 当前选择对象
 let currentNodeId: string = null
@@ -34,16 +33,11 @@ function parseTargetWidget(stage: Konva.Stage) {
     if (!currentNodeId) return
 
     const target = source.find((x) => x.property.id === currentNodeId)
-
     if (target) {
         // 生成组件数据
         const data = cloneWidget(target)
-        // 生成组件对象
-        const widget = renderWidget(data)
-        // 添加到数据源
-        store.dispatch('add', data)
-        // 添加到图层
-        addWidget(stage, widget)
+        // 创建组件
+        store.dispatch('createWidget', data)
     }
 }
 

@@ -4,7 +4,7 @@
             <div class="icon-button" on:click="{() => onChangeZoom(1)}">
                 <svelte:component this="{Add}" />
             </div>
-            <div class="zoom-value">{($stage.zoom * 100).toFixed(0)}%</div>
+            <div class="zoom-value">{($zoom * 100).toFixed(0)}%</div>
             <div class="icon-button" on:click="{() => onChangeZoom(-1)}">
                 <svelte:component this="{Subtract}" />
             </div>
@@ -48,32 +48,23 @@ import Add from 'carbon-icons-svelte/lib/Add16'
 import Subtract from 'carbon-icons-svelte/lib/Subtract16'
 import Reset from 'carbon-icons-svelte/lib/Reset16'
 
-import { getContext } from 'svelte'
-import type { IEvent, IStage } from '@/editor/interface'
-import { EventType } from '@/editor/enums'
-import type { Writable } from 'svelte/store'
+import { useStore } from '@/store'
 
-const stage = getContext<Writable<IStage>>('stage')
-const event = getContext<IEvent>('event')
+const { zoom, dispatch } = useStore((state) => state.editor)
 
 const zoomStep = 0.1
 const minZoom = 0.5
 const maxZoom = 5
 
 function onChangeZoom(vector?: 1 | -1) {
-    if (
-        ($stage.zoom <= minZoom && vector < 0) ||
-        ($stage.zoom >= maxZoom && vector > 0)
-    ) {
+    if (($zoom <= minZoom && vector < 0) || ($zoom >= maxZoom && vector > 0)) {
         return
     }
 
-    if (vector) {
-        $stage.zoom = parseFloat(($stage.zoom + vector * zoomStep).toFixed(2))
-    } else {
-        $stage.zoom = 1
-    }
+    const value = vector
+        ? parseFloat(($zoom + vector * zoomStep).toFixed(2))
+        : 1
 
-    event.emit(EventType.zoom, $stage.zoom)
+    dispatch('updateZoom', value)
 }
 </script>

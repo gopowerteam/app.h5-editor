@@ -21,7 +21,7 @@ const appModule: StoreonModule<AppState, AppEvents> = (store) => {
     store.on('updateLayout', (state, value) => ({ ...state, layout: value }))
 }
 
-export const AppStore: Store<AppState, AppEvents> = {
+export const appStore: Store<AppState, AppEvents> = {
     keys: Object.keys(state) as Array<keyof AppState>,
     module: appModule,
 }

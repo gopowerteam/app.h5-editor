@@ -1,5 +1,5 @@
 import Konva from 'konva'
-import { getLayers } from '..'
+import { getLayers } from '../stage'
 
 const backgroundNodes = ['background']
 
@@ -61,7 +61,7 @@ export function clearSelector(stage: Konva.Stage) {
  * @param node
  */
 export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
-    const { background: backgroundLayer } = getLayers(stage)
+    const { background: backgroundLayer } = getLayers()
 
     node.on('mouseenter', (e) => {
         if (!getSelector(stage, node)) {
@@ -95,7 +95,7 @@ export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
  * 创建选择器
  */
 export function setupStageSelector(stage: Konva.Stage) {
-    const { content: contentLayer } = getLayers(stage)
+    const { content: contentLayer } = getLayers()
 
     // 安装选择器
     stage.on('mousedown', (e) => {

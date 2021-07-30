@@ -1,4 +1,4 @@
-import Konva from 'konva'
+import type Konva from 'konva'
 import { WidgetType } from '../enums'
 import type { Widget } from '../model/widget'
 import {
@@ -6,6 +6,7 @@ import {
     createSelector,
     setupNodeSelector
 } from './setups/selector.setup'
+import { getLayers } from './stage'
 import { renderTextWidget } from './widgets/text.render'
 
 /**
@@ -33,7 +34,7 @@ export function renderWidget(data: Widget) {
 
 export function addWidget(stage: Konva.Stage, node: Konva.Shape) {
     const { content: contentLayer, background: backgroundLayer } =
-        getLayers(stage)
+        getLayers()
     // 安装选择器
     setupNodeSelector(stage, node)
     // 清除选择器
@@ -44,73 +45,29 @@ export function addWidget(stage: Konva.Stage, node: Konva.Shape) {
     contentLayer.add(node)
 }
 
-/**
- * 创建舞台
- * @param container
- * @param width
- * @param height
- */
-export function createStage(container) {
-    const width = container.clientWidth
-    const height = container.clientHeight
+export function removeWidget(stage, id) {
+    const { content: contentLayer } = getLayers()
 
-    // 创建舞台实例
-    const stage = new Konva.Stage({
-        container: container,
-        width: width,
-        height: height
-    })
+    const [target] = contentLayer.getChildren(widget => widget.id() === id)
 
-    // 创建图层实例
-    const { content, background } = createLayers(stage, width, height)
-
-    // 添加图层
-    stage.add(content)
-    stage.add(background)
-    // 重绘布局
-    content.draw()
-    background.draw()
-
-    return stage
-}
-
-/**
- * 创建基础图层
- * @param stage
- * @param width
- * @param height
- */
-function createLayers(stage: Konva.Stage, width: number, height: number) {
-    // 创建内容布局
-    const contentLayer = new Konva.Layer({
-        name: 'content',
-        x: stage.width() / 2 - width / 2,
-        y: stage.height() / 2 - height / 2,
-        clip: {
-            x: 0,
-            y: 0,
-            width,
-            height
-        }
-    })
-
-    // 创建背景布局
-    const backgroundLayer = new Konva.Layer({ name: 'background' })
-
-    return {
-        content: contentLayer,
-        background: backgroundLayer
+    if (target) {
+        // 销毁组件
+        target.destroy()
+        // 清除选择器
+        clearSelector(stage)
     }
+
 }
 
-/**
- * 获取基础图层
- */
-export function getLayers(stage: Konva.Stage) {
-    const layers = stage.getLayers()
+export function getSelectedWidget(stage: Konva.Stage) {
+    const transformers = stage.find<Konva.Transformer>('Transformer')
+    const transformer = transformers.find(x => x.resizeEnabled)
 
-    return {
-        content: layers.find((layer) => layer.name() === 'content'),
-        background: layers.find((layer) => layer.name() === 'background')
+    if (!transformer) return
+
+    const node = transformer.getNode()
+
+    if (node.visible()) {
+        return node
     }
 }

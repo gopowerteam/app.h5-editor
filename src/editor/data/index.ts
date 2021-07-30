@@ -10,7 +10,7 @@ const createRules = {
     [WidgetType.text]: createTextWidget
 }
 
-export function createWidget(type: WidgetType) {
+export function createWidget(type: WidgetType): Widget {
     // 生成创建器
     const creator = createRules[type]
 

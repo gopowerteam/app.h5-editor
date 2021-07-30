@@ -20,7 +20,7 @@ const module: StoreonModule<UserState, UserEvents> = (store) => {
     store.on('login', (state, id) => ({ ...state, userid: id, username: id + ':name' }))
 }
 
-export const UserStore: Store<UserState, UserEvents> = {
+export const userStore: Store<UserState, UserEvents> = {
     keys: Object.keys(state) as Array<keyof UserState>,
     module,
     persist: ['userid']

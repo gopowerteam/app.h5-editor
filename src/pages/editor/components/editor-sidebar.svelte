@@ -14,8 +14,7 @@
         <div class="widget-panel flex flex-auto flex-wrap">
             {#each currentWidgets as widget}
                 <div
-                    on:click="{() =>
-                        source.event.emit(EventType.create, widget.event)}"
+                    on:click="{() => dispatch('createWidget', widget.event)}"
                     class="widget bg-gray-100 hover:bg-gray-50 hover:text-blue-500 cursor-pointer">
                     <svelte:component this="{widget.icon}" />
                     <div class="pt-2 text-xs">{widget.label}</div>
@@ -54,18 +53,14 @@
 </style>
 
 <script lang="ts">
-import { WidgetType, EventType } from '@/editor/enums'
+import { WidgetType } from '@/editor/enums'
 import SettingsAdjust from 'carbon-icons-svelte/lib/SettingsAdjust24'
 import MediaLibrary from 'carbon-icons-svelte/lib/MediaLibrary24'
 import TextScale from 'carbon-icons-svelte/lib/TextScale20'
 import Image from 'carbon-icons-svelte/lib/Image20'
-import { getContext } from 'svelte'
-import type { IEvent } from '@/editor/interface'
+import { useStore } from '@/store'
 
-const source = {
-    event: getContext<IEvent>('event')
-}
-
+const { dispatch } = useStore((state) => state.editor)
 let currentMenu = 'base'
 
 $: currentWidgets = widgetMenus.find((x) => x.name === currentMenu).widgets
