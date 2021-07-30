@@ -53,6 +53,7 @@ import { writable } from 'svelte/store'
 import { setContext } from 'svelte'
 import type { IEvent, IStage } from '@/editor/interface'
 
+// 数据监听器
 const listeners = []
 
 /**

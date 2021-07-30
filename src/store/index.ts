@@ -4,20 +4,22 @@ import { createStoreon, StoreonModule } from 'storeon'
 import { setContext } from 'svelte'
 
 import { AppStore, AppEvents, AppState } from './app.store'
+import { EditorEvents, EditorState, EditorStore } from './editor.store'
 import { UserStore, UserState, UserEvents } from './user.store'
 
 export type Store<S, E> = {
     keys: (keyof S)[]
     module: StoreonModule<S, E>
-    persist?: string[]  // 持久化支持
+    persist?: string[] // 持久化支持
 }
 
-type Events = AppEvents & UserEvents
-type State = AppState & UserState
+type Events = AppEvents & UserEvents & EditorEvents
+type State = AppState & UserState & EditorState
 
 export const stores = {
     user: UserStore,
-    app: AppStore
+    app: AppStore,
+    editor: EditorStore
 }
 
 const getModules = () => {
