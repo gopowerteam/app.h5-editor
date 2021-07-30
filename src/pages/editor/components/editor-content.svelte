@@ -10,16 +10,13 @@
 </style>
 
 <script lang="ts">
-import { createTextWidget } from '@/editor/data/text-widget.data'
+import Konva from 'konva'
 
 import { EventType, WidgetType } from '@/editor/enums'
-
 import type { IEvent } from '@/editor/interface'
-import { renderTextWidget } from '@/editor/render/text.render'
-import { Content } from 'carbon-components-svelte'
-
-import Konva from 'konva'
 import { getContext, onMount } from 'svelte'
+import { renderWidget } from '@/editor/render';
+import { setupStageSelector } from '@/editor/render/setups/selector.setup';
 
 const source = {
     event: getContext<IEvent>('event'),
@@ -30,10 +27,9 @@ let container: HTMLDivElement
 let stage: Konva.Stage
 let contentLayer: Konva.Layer
 let backgroundLayer: Konva.Layer
+
 const layerWidth = 360
 const layerHeight = 640
-
-const backgroundItems = ['background']
 
 /**
  * 重绘舞台尺寸
@@ -61,107 +57,6 @@ function createBackground() {
     })
 
     contentLayer.add(background)
-}
-
-// function createTextWidget() {
-//     const text = new Konva.Text({
-//         x: 0,
-//         y: 0,
-//         text: 'as大赛阿塞阀赛后',
-//         fontSize: 50,
-//         fill: 'green'
-//     })
-
-//     text.draggable(true)
-
-//     text.on('mouseenter', (e) => {
-//         const transformer = getSelector(text)
-
-//         if (!transformer) {
-//             createSelector(e.target)
-//         }
-//     })
-
-//     text.on('mouseout', (e) => {
-//         const transformer = getSelector(text)
-
-//         if (transformer && !transformer.resizeEnabled()) {
-//             transformer.destroy()
-//         }
-//     })
-
-//     contentLayer.add(text)
-// }
-
-/**
- * 获取选择器
- * @param node
- */
-function getSelector(node: Konva.Node) {
-    const transformers = stage.find<Konva.Transformer>('Transformer')
-    return transformers.find((tr) => tr.nodes().includes(node))
-}
-
-/**
- * 创建选择器
- * @param node
- * @param enabled
- */
-function createSelector(node: Konva.Node, enabled: boolean = false) {
-    const transformer = new Konva.Transformer({
-        keepRatio: true,
-        resizeEnabled: enabled,
-        rotateEnabled: enabled,
-        enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
-    })
-
-    transformer.nodes([node])
-    backgroundLayer.add(transformer)
-    backgroundLayer.draw()
-    return transformer
-}
-
-/**
- * 清理选择器
- */
-function clearSelector() {
-    const transformer = stage.find<Konva.Transformer>('Transformer')
-    transformer.forEach((tr) => tr.destroy())
-    backgroundLayer.draw()
-}
-/**
- * 创建选择器
- */
-function setupSelector() {
-    // 安装选择器
-    stage.on('mousedown', (e) => {
-        // 点击舞台删除所有选择器
-        if (e.target === stage) {
-            return clearSelector()
-        }
-
-        // 排除点击anchor
-        if (e.target.name().includes('anchor')) {
-            return
-        }
-
-        // 获取当前可操作点击对象
-        const node = contentLayer.findOne((x) => {
-            return x === e.target && !backgroundItems.includes(x.name())
-        })
-
-        // 非可选择对象则去除selector
-        if (!node) {
-            return clearSelector()
-        }
-
-        // 获取选择器
-        const transformer = getSelector(node) || createSelector(node)
-
-        // 开启resize&rotate
-        transformer.resizeEnabled(true)
-        transformer.rotateEnabled(true)
-    })
 }
 
 /**
@@ -201,26 +96,30 @@ function createCanvas() {
 }
 
 function eventSetup() {
+    // 处理缩放事件
     source.event.on(EventType.zoom, (scale) => {
         contentLayer.scaleX(scale)
         contentLayer.scaleY(scale)
         resizeLayer()
     })
 
-    source.event.on(EventType.create, (widgetType: WidgetType) => {
-        const text = createTextWidget()
-        const node = renderTextWidget(text)
-        contentLayer.add(node)
+    // 处理创建事件
+    source.event.on(EventType.create, (type: WidgetType) => {
+        const widget = renderWidget(backgroundLayer, type)
+        contentLayer.add(widget)
     })
 }
 
 onMount(() => {
+    // 创建舞台
     createCanvas()
+    // 创建背景
     createBackground()
-    setupSelector()
-
+    // 安装选择器
+    setupStageSelector(backgroundLayer,contentLayer)
+    // 安装事件处理
     eventSetup()
-
+    // 处理缩放重绘
     window.addEventListener('resize', resizeLayer)
 })
 </script>

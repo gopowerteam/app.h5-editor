@@ -70,7 +70,6 @@ function onChangeZoom(vector?: 1 | -1) {
 
     if (vector) {
         $stage.zoom = parseFloat(($stage.zoom + vector * zoomStep).toFixed(2))
-        console.log($stage.zoom)
     } else {
         $stage.zoom = 1
     }

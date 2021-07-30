@@ -1,5 +1,4 @@
-import Konva from 'konva'
-import type { TextWidget } from '../model/text-widget'
+import type Konva from 'konva'
 
 /**
  * 创建编辑区域
@@ -57,7 +56,11 @@ function createTextarea(node: Konva.Text) {
         }
     }
 }
-function setupEditable(node: Konva.Text) {
+
+/**
+ * 安装编辑器
+ */
+export function setupEditable(node: Konva.Text) {
     // 添加编辑功能
     node.on('dblclick dbltap', () => {
         // 隐藏原节点
@@ -66,19 +69,4 @@ function setupEditable(node: Konva.Text) {
         // 获取文本位置
         createTextarea(node)
     })
-}
-
-export function renderTextWidget(widget: TextWidget) {
-    const node = new Konva.Text({
-        ...widget.property,
-        ...widget.textProperty
-    })
-
-    // 开启拖拽
-    node.draggable(true)
-
-    // 设置编辑功能
-    setupEditable(node)
-
-    return node
 }
