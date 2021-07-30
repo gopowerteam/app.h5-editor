@@ -5,14 +5,18 @@ import type Konva from 'konva'
  * @param node
  */
 function createTextarea(node: Konva.Text) {
+    const layer = node.getLayer()
+    const stage = layer.getLayer()
+
     // 获取文本位置
     const areaPosition = {
-        x: node.absolutePosition().x,
-        y: node.absolutePosition().y
+        x: stage.offsetX() + node.absolutePosition().x,
+        y: stage.offsetY() + node.absolutePosition().y
     }
     // 创建TextArea
     const textarea = document.createElement('textarea')
-    document.body.appendChild(textarea)
+    const container = document.getElementById('convas-container')
+    container.appendChild(textarea)
 
     textarea.value = node.text()
     textarea.style.position = 'absolute'
@@ -28,7 +32,8 @@ function createTextarea(node: Konva.Text) {
     textarea.style.background = 'none'
     textarea.style.outline = 'none'
     textarea.style.resize = 'none'
-    textarea.style.lineHeight = `${node.lineHeight()}px`
+    textarea.style.wordBreak = 'break-all'
+    // textarea.style.lineHeight = `${node.lineHeight()}px`
     textarea.style.fontFamily = node.fontFamily()
     textarea.style.transformOrigin = 'left top'
     textarea.style.textAlign = node.align()
@@ -37,24 +42,31 @@ function createTextarea(node: Konva.Text) {
     textarea.style.transform = `rotateZ(${node.rotation()}deg)`
 
     // reset height
-    textarea.style.height = 'auto'
+    // textarea.style.height = 'auto'
     // after browsers resized it we can set actual value
-    textarea.style.height = textarea.scrollHeight + 3 + 'px'
+    // textarea.style.height = textarea.scrollHeight + 3 + 'px'
 
     textarea.focus()
 
+    /**
+     * 移除Textarea
+     */
     function removeTextarea() {
         textarea.parentNode.removeChild(textarea)
-        window.removeEventListener('click', handleOutsideClick)
         node.show()
     }
 
-    function handleOutsideClick(e: MouseEvent) {
-        if (e.target !== textarea) {
+    textarea.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
             node.text(textarea.value)
-            removeTextarea()
+            textarea.blur()
         }
-    }
+    })
+
+    textarea.addEventListener('blur', function (e) {
+        node.text(textarea.value)
+        removeTextarea()
+    })
 }
 
 /**

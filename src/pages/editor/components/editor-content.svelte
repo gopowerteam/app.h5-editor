@@ -1,5 +1,8 @@
 <template>
-    <div bind:this="{container}" class="content-container absolute inset-0">
+    <div
+        id="convas-container"
+        bind:this="{container}"
+        class="content-container absolute inset-0">
     </div>
 </template>
 
@@ -15,8 +18,8 @@ import Konva from 'konva'
 import { EventType, WidgetType } from '@/editor/enums'
 import type { IEvent } from '@/editor/interface'
 import { getContext, onMount } from 'svelte'
-import { renderWidget } from '@/editor/render';
-import { setupStageSelector } from '@/editor/render/setups/selector.setup';
+import { renderWidget } from '@/editor/render'
+import { setupStageSelector } from '@/editor/render/setups/selector.setup'
 
 const source = {
     event: getContext<IEvent>('event'),
@@ -116,7 +119,7 @@ onMount(() => {
     // 创建背景
     createBackground()
     // 安装选择器
-    setupStageSelector(backgroundLayer,contentLayer)
+    setupStageSelector(backgroundLayer, contentLayer)
     // 安装事件处理
     eventSetup()
     // 处理缩放重绘
