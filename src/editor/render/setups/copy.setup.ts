@@ -1,27 +1,27 @@
 import { cloneWidget } from '@/editor/data'
 import { store } from '@/store'
 import type Konva from 'konva'
+import { getActiveSelector } from './selector.setup'
 
 // 当前选择对象
-let currentNodeId: string = null
+let currentNodeId: string[] = []
 
 /**
  * 设置目标组件
  */
 function setTargetWidget(stage) {
     // 查询选中组件
-    const transformers: Konva.Transformer[] = stage.find('Transformer')
-    const transformer = transformers.find((tr) => tr.resizeEnabled())
+    const transformer = getActiveSelector(stage)
 
     if (!transformer) {
         return
     }
 
     // 获取目标节点
-    const node = transformer.getNode()
+    const nodes = transformer.getNodes().filter(node => node.visible()).map(node => node.id())
 
     // 设置选择组件ID
-    currentNodeId = node.id()
+    currentNodeId = [...nodes]
 }
 
 /**
@@ -30,14 +30,16 @@ function setTargetWidget(stage) {
 function parseTargetWidget(stage: Konva.Stage) {
     const { source } = store.get()
 
-    if (!currentNodeId) return
+    if (currentNodeId.length === 0) return
 
-    const target = source.find((x) => x.property.id === currentNodeId)
-    if (target) {
+    const nodes = source.filter((x) => currentNodeId.includes(x.property.id))
+    if (nodes.length) {
         // 生成组件数据
-        const data = cloneWidget(target)
+        const widgets = nodes.map(node => cloneWidget(node))
         // 创建组件
-        store.dispatch('createWidget', data)
+        widgets.forEach(data =>
+            store.dispatch('createWidget', data))
+
     }
 }
 

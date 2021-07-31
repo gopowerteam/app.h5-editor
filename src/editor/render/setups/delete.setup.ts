@@ -8,11 +8,11 @@ export function setupDeleteListener(stage: Konva.Stage) {
             return
         }
 
-        const widget = getSelectedWidget(stage)
+        // 获取选择的组件
+        const widgets = getSelectedWidget(stage)
 
-        if (widget) {
+        widgets.forEach(widget => {
             store.dispatch('deleteWidget', widget.id())
-        }
-
+        })
     })
 }

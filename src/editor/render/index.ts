@@ -4,6 +4,7 @@ import type { Widget } from '../model/widget'
 import {
     clearSelector,
     createSelector,
+    getActiveSelector,
     setupNodeSelector
 } from './setups/selector.setup'
 import { getLayers } from './stage'
@@ -60,14 +61,12 @@ export function removeWidget(stage, id) {
 }
 
 export function getSelectedWidget(stage: Konva.Stage) {
-    const transformers = stage.find<Konva.Transformer>('Transformer')
-    const transformer = transformers.find(x => x.resizeEnabled)
+    // 获取激活的选择器
+    const transformer = getActiveSelector(stage)
 
     if (!transformer) return
 
-    const node = transformer.getNode()
+    const nodes = transformer.getNodes()
 
-    if (node.visible()) {
-        return node
-    }
+    return nodes.filter(node => node.visible())
 }

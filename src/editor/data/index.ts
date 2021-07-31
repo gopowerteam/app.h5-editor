@@ -18,7 +18,7 @@ export function createWidget(type: WidgetType): Widget {
 }
 
 export function cloneWidget(widget: Widget) {
-    const object = classToClass(widget)
-    object.property.id === Math.random().toString(32).slice(2)
-    return object
+    const data = classToClass(widget)
+    data.property.id = Math.random().toString(32).slice(2)
+    return data
 }
