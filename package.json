@@ -3,7 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
+        "build": "vite build --base=/app.h5-editor/",
         "serve": "vite preview",
         "check": "svelte-check --tsconfig ./tsconfig.json"
     },
