@@ -3,9 +3,6 @@ import { store } from '@/store'
 import type Konva from 'konva'
 import { getActiveSelector } from './selector.setup'
 
-// 当前选择对象
-let currentNodeId: string[] = []
-
 /**
  * 设置目标组件
  */
@@ -18,24 +15,24 @@ function setTargetWidget(stage) {
     }
 
     // 获取目标节点
-    const nodes = transformer
-        .getNodes()
-        .filter((node) => node.visible())
-        .map((node) => node.id())
+    const nodes = transformer.getNodes().filter((node) => node.visible())
 
     // 设置选择组件ID
-    currentNodeId = [...nodes]
+    store.dispatch('updateSelected', [...nodes])
 }
 
 /**
  * 粘贴目标组件
  */
-function parseTargetWidget(stage: Konva.Stage) {
-    const { widgets } = store.get()
+function parseTargetWidget() {
+    const { widgets, selected } = store.get()
 
-    if (currentNodeId.length === 0) return
+    if (selected.length === 0) return
 
-    const nodes = widgets.filter((x) => currentNodeId.includes(x.property.id))
+    const nodes = widgets.filter((x) =>
+        selected.map((node) => node.id()).includes(x.id)
+    )
+
     if (nodes.length) {
         // 生成组件数据
         const widgets = nodes.map((node) => cloneWidget(node))

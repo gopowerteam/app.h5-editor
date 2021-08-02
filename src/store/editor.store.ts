@@ -27,6 +27,7 @@ import type { ImageWidget } from '@/editor/model/image-widget'
 export interface EditorState {
     stage: Konva.Stage
     zoom: number
+    selected: Konva.Node[]
     widgets: Widget[]
     history: {
         backward: EditorHistory[]
@@ -36,6 +37,7 @@ export interface EditorState {
 
 const state: EditorState = {
     stage: undefined,
+    selected: [],
     zoom: 1,
     widgets: [],
     history: {
@@ -47,6 +49,7 @@ const state: EditorState = {
 export interface EditorEvents {
     updateStage: Konva.Stage
     updateWidgets: Widget[]
+    updateSelected: Konva.Node[]
     updateWidget: Partial<TextWidget | ImageWidget>
     updateZoom: number
     createWidget: Widget | WidgetType
@@ -72,6 +75,11 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
     store.on('updateWidgets', (state, widget) => ({
         ...state,
         widget
+    }))
+    // 更新数据源
+    store.on('updateSelected', (state, widgets) => ({
+        ...state,
+        selected: widgets
     }))
     // 更新数据源
     store.on(
