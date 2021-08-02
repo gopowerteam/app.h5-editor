@@ -55,12 +55,46 @@ export function provideStore() {
     provideStoreon(store)
 }
 
-
-export function updateState(update: any) {
+export function updateState(
+    update: (state: Partial<State>, value: any) => Partial<State>,
+    hooks: {
+        before?: ((state: Partial<State>) => Partial<State> | void)[]
+        after?: ((state: Partial<State>) => Partial<State> | void)[]
+    } = {
+        after: [],
+        before: []
+    }
+) {
     return (state, value) => {
-        return ({
+        // 获取hooks
+        const { before = [], after = [] } = hooks
+
+        // 计算前置附加数据
+        const beforeState = before.reduce((result, action) => {
+            return {
+                ...result,
+                ...(action(result) || {})
+            }
+        }, state)
+
+        // 计算更新数据
+        const data = {
             ...state,
             ...update(state, value)
-        })
+        }
+
+        // 计算后置附加数据
+        const afterState = after.reduce((result, action) => {
+            return {
+                ...result,
+                ...(action(result) || {})
+            }
+        }, data)
+
+        return {
+            ...beforeState,
+            ...data,
+            ...afterState
+        }
     }
 }

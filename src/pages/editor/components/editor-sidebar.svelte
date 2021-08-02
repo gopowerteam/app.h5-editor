@@ -29,6 +29,7 @@
     width: 50px;
     flex-basis: 50px;
     border-right: solid 1px rgba(0, 0, 0, 0.1);
+    user-select: none;
 
     .menu-item {
         &.active {
@@ -39,6 +40,7 @@
 }
 
 .widget-panel {
+    user-select: none;
     // background-color: rgba(100, 100, 100, 0.1);
     .widget {
         height: 80px;

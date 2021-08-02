@@ -1,6 +1,8 @@
-import type Konva from 'konva'
+import { appConfig } from '@/config/app.config'
+import Konva from 'konva'
 import { WidgetType } from '../enums'
 import type { Widget } from '../model/widget'
+import { setupListener } from './setups/listener.setup'
 import {
     clearSelector,
     createSelector,
@@ -33,15 +35,26 @@ export function renderWidget(data: Widget) {
     return node
 }
 
-export function addWidget(stage: Konva.Stage, node: Konva.Shape) {
-    const { content: contentLayer, background: backgroundLayer } =
-        getLayers()
+export function renderWidgets(data: Widget[]) {
+    return data.map((node) => renderWidget(node))
+}
+
+export function addWidget(
+    stage: Konva.Stage,
+    node: Konva.Shape,
+    selectd = true
+) {
+    const { content: contentLayer, background: backgroundLayer } = getLayers()
     // 安装选择器
     setupNodeSelector(stage, node)
     // 清除选择器
     clearSelector(stage)
     // 创建选择器
-    createSelector(backgroundLayer, node, true)
+    if (selectd) {
+        createSelector(backgroundLayer, node, true)
+    }
+    // 安装监听器
+    setupListener(node)
     // 添加组件到图层
     contentLayer.add(node)
 }
@@ -49,7 +62,7 @@ export function addWidget(stage: Konva.Stage, node: Konva.Shape) {
 export function removeWidget(stage, id) {
     const { content: contentLayer } = getLayers()
 
-    const [target] = contentLayer.getChildren(widget => widget.id() === id)
+    const [target] = contentLayer.getChildren((widget) => widget.id() === id)
 
     if (target) {
         // 销毁组件
@@ -57,7 +70,6 @@ export function removeWidget(stage, id) {
         // 清除选择器
         clearSelector(stage)
     }
-
 }
 
 export function getSelectedWidget(stage: Konva.Stage) {
@@ -68,5 +80,22 @@ export function getSelectedWidget(stage: Konva.Stage) {
 
     const nodes = transformer.getNodes()
 
-    return nodes.filter(node => node.visible())
+    return nodes.filter((node) => node.visible())
+}
+
+/**
+ * 创建舞台背景
+ */
+export function createBackground() {
+    const { content: contentLayer } = getLayers()
+    const { width, height } = appConfig.editor.content
+    // 创建背景图形
+    const background = new Konva.Rect({
+        width,
+        height,
+        fill: '#fff',
+        name: 'background'
+    })
+    // 添加背景到图层
+    contentLayer.add(background)
 }

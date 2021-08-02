@@ -18,7 +18,10 @@ function setTargetWidget(stage) {
     }
 
     // 获取目标节点
-    const nodes = transformer.getNodes().filter(node => node.visible()).map(node => node.id())
+    const nodes = transformer
+        .getNodes()
+        .filter((node) => node.visible())
+        .map((node) => node.id())
 
     // 设置选择组件ID
     currentNodeId = [...nodes]
@@ -28,18 +31,16 @@ function setTargetWidget(stage) {
  * 粘贴目标组件
  */
 function parseTargetWidget(stage: Konva.Stage) {
-    const { source } = store.get()
+    const { widgets } = store.get()
 
     if (currentNodeId.length === 0) return
 
-    const nodes = source.filter((x) => currentNodeId.includes(x.property.id))
+    const nodes = widgets.filter((x) => currentNodeId.includes(x.property.id))
     if (nodes.length) {
         // 生成组件数据
-        const widgets = nodes.map(node => cloneWidget(node))
+        const widgets = nodes.map((node) => cloneWidget(node))
         // 创建组件
-        widgets.forEach(data =>
-            store.dispatch('createWidget', data))
-
+        widgets.forEach((data) => store.dispatch('createWidget', data))
     }
 }
 

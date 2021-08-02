@@ -6,3 +6,12 @@ export enum WidgetType {
 export enum QuoteType {
     username = 'USERNAME'
 }
+
+export enum TextWidgetEvent {
+    input = 'input'
+}
+
+export enum HistoryType {
+    stage = 'stage',
+    widget = 'widget'
+}

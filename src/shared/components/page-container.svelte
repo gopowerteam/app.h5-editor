@@ -22,6 +22,7 @@
 .header {
     height: 72px;
     border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+    user-select: none;
 }
 
 .content {

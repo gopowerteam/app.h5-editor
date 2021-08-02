@@ -1,3 +1,4 @@
+import { TextWidgetEvent } from '@/editor/enums'
 import type Konva from 'konva'
 
 /**
@@ -58,13 +59,13 @@ function createTextarea(node: Konva.Text) {
 
     textarea.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-            node.text(textarea.value)
             textarea.blur()
         }
     })
 
     textarea.addEventListener('blur', function (e) {
         node.text(textarea.value)
+        node.fire(TextWidgetEvent.input)
         removeTextarea()
     })
 }
