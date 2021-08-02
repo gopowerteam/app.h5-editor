@@ -1,3 +1,4 @@
+import { store } from '@/store'
 import Konva from 'konva'
 import { getLayers } from '../stage'
 
@@ -54,6 +55,11 @@ export function createSelector(
     backgroundLayer.add(transformer)
     backgroundLayer.draw()
 
+    // 存储选择项
+    if (enabled) {
+        store.dispatch('updateSelected', nodes)
+    }
+
     return transformer
 }
 
@@ -64,6 +70,8 @@ export function clearSelector(stage: Konva.Stage) {
     const transformer = stage.find<Konva.Transformer>('Transformer')
     transformer.forEach((tr) => tr.destroy())
     stage.draw()
+
+    store.dispatch('updateSelected', [])
 }
 
 /**

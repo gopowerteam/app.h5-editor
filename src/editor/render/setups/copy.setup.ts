@@ -18,26 +18,26 @@ function setTargetWidget(stage) {
     const nodes = transformer.getNodes().filter((node) => node.visible())
 
     // 设置选择组件ID
-    store.dispatch('updateSelected', [...nodes])
+    store.dispatch('updateCopied', [...nodes])
 }
 
 /**
  * 粘贴目标组件
  */
 function parseTargetWidget() {
-    const { widgets, selected } = store.get()
+    const { widgets, copied } = store.get()
 
-    if (selected.length === 0) return
+    if (copied.length === 0) return
 
     const nodes = widgets.filter((x) =>
-        selected.map((node) => node.id()).includes(x.id)
+        copied.map((node) => node.id()).includes(x.id)
     )
 
     if (nodes.length) {
-        // 生成组件数据
-        const widgets = nodes.map((node) => cloneWidget(node))
         // 创建组件
-        widgets.forEach((data) => store.dispatch('createWidget', data))
+        nodes
+            .map((node) => cloneWidget(node))
+            .forEach((data) => store.dispatch('createWidget', data))
     }
 }
 

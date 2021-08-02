@@ -28,6 +28,7 @@ export interface EditorState {
     stage: Konva.Stage
     zoom: number
     selected: Konva.Node[]
+    copied: Konva.Node[]
     widgets: Widget[]
     history: {
         backward: EditorHistory[]
@@ -38,6 +39,7 @@ export interface EditorState {
 const state: EditorState = {
     stage: undefined,
     selected: [],
+    copied: [],
     zoom: 1,
     widgets: [],
     history: {
@@ -50,6 +52,7 @@ export interface EditorEvents {
     updateStage: Konva.Stage
     updateWidgets: Widget[]
     updateSelected: Konva.Node[]
+    updateCopied: Konva.Node[]
     updateWidget: Partial<TextWidget | ImageWidget>
     updateZoom: number
     createWidget: Widget | WidgetType
@@ -76,10 +79,15 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
         ...state,
         widget
     }))
-    // 更新数据源
+    // 更新选择项
     store.on('updateSelected', (state, widgets) => ({
         ...state,
         selected: widgets
+    }))
+    // 更新复制项
+    store.on('updateCopied', (state, widgets) => ({
+        ...state,
+        copied: widgets
     }))
     // 更新数据源
     store.on(
