@@ -53,6 +53,6 @@ export function setupCopy(stage: Konva.Stage) {
 
         if (e.key === 'c') setTargetWidget(stage)
 
-        if (e.key === 'v') parseTargetWidget(stage)
+        if (e.key === 'v') parseTargetWidget()
     })
 }
