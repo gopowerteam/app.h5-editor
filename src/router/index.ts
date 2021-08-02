@@ -6,6 +6,7 @@ import { boot } from '@/bootstrap/boot'
 export const router = new Router({
     mode: historyMode,
     omitTrailingSlash: true,
+    base: import.meta.env.BASE_URL,
     routes
 })
 
