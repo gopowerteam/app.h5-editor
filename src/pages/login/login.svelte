@@ -18,6 +18,6 @@ const { userid, dispatch } = useStore((store) => store.user)
 
 function login() {
     dispatch('login', 'admin')
-    router.push('/dashboard')
+    router.push('/editor')
 }
 </script>

@@ -3,10 +3,13 @@ import historyMode from '@easyroute/core/history-mode'
 import { routes } from './routes'
 import { store } from '@/store'
 import { boot } from '@/bootstrap/boot'
+
+const BASE_URL = import.meta.env.BASE_URL
+
 export const router = new Router({
     mode: historyMode,
     omitTrailingSlash: true,
-    base: import.meta.env.BASE_URL,
+    base: BASE_URL === '/' ? '' : BASE_URL,
     routes
 })
 
