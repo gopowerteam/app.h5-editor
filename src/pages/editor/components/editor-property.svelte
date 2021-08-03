@@ -3,6 +3,7 @@
         <Tabs>
             <Tab label="属性" />
             <Tab label="页面" />
+            <Tab label="行为" />
 
             <div slot="content">
                 <TabContent>
@@ -11,6 +12,7 @@
                     {/if}
                 </TabContent>
                 <TabContent><EditorPageProperty /></TabContent>
+                <TabContent><EditorPageProperty /></TabContent>
             </div>
         </Tabs>
     </div>
@@ -18,7 +20,7 @@
 
 <style lang="less">
 :global(.property-container > .bx--tabs li) {
-    width: 50%;
+    width: 33%;
     border-top: 0;
     padding: 0;
     margin: 0;

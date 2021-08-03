@@ -186,7 +186,8 @@ function onCreateWidget(state: EditorState, value: Widget | WidgetType) {
     addWidget(stage, widget)
 
     return {
-        widgets: [...widgets, data]
+        widgets: [...widgets, data],
+        selected: [widget]
     }
 }
 

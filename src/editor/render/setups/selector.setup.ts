@@ -10,10 +10,9 @@ const anchorRules = {
     default: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
 }
 
-
 export function getActiveSelector(stage: Konva.Stage) {
     const transformers = stage.find<Konva.Transformer>('Transformer')
-    const transformer = transformers.find(x => x.name() === 'selected')
+    const transformer = transformers.find((x) => x.name() === 'selected')
     return transformer
 }
 /**
@@ -41,7 +40,7 @@ export function createSelector(
     const transformer = new Konva.Transformer({
         keepRatio: true,
         resizeEnabled: enabled,
-        rotateEnabled: enabled,
+        rotateEnabled: enabled
     })
 
     if (target instanceof Konva.Node) {
@@ -57,7 +56,8 @@ export function createSelector(
 
     // 存储选择项
     if (enabled) {
-        store.dispatch('updateSelected', nodes)
+        // 设置选择器名称
+        transformer.name('selected')
     }
 
     return transformer
@@ -70,8 +70,6 @@ export function clearSelector(stage: Konva.Stage) {
     const transformer = stage.find<Konva.Transformer>('Transformer')
     transformer.forEach((tr) => tr.destroy())
     stage.draw()
-
-    store.dispatch('updateSelected', [])
 }
 
 /**
@@ -90,7 +88,6 @@ export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
 
     node.on('mouseout', (e) => {
         const transformer = getNodeSelector(stage, node)
-
         if (transformer && transformer.name() !== 'selected') {
             transformer.destroy()
         }
@@ -120,9 +117,9 @@ export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
         // 清除选择器
         clearSelector(stage)
         // 创建选择器
-        const transformer = createSelector(backgroundLayer, nodes, nodes instanceof Konva.Node)
-        // 设置选择器名称
-        transformer.name('selected')
+        createSelector(backgroundLayer, nodes, nodes instanceof Konva.Node)
+        // 更新选中节点
+        store.dispatch('updateSelected', [node])
         // 开启resize&rotate
         // transformer.resizeEnabled(true)
         // transformer.rotateEnabled(true)
@@ -137,20 +134,16 @@ export function setupStageSelector(stage: Konva.Stage) {
 
     // 安装选择器
     stage.on('mousedown', (e) => {
-        // 点击舞台删除所有选择器
-        if (e.target === stage) {
-            clearSelector(stage)
-            return
-        }
-
         // 获取当前可操作点击对象
-        const node = contentLayer.findOne((x) =>
-            backgroundNodes.includes(e.target.name())
+        const widget = contentLayer.findOne(
+            (node) =>
+                node === e.target && !backgroundNodes.includes(node.name())
         )
-
         // 非可选择对象则去除selector
-        if (node) {
+        if (!widget) {
             clearSelector(stage)
+            // 更新选中节点
+            store.dispatch('updateSelected', [])
             return
         }
     })
