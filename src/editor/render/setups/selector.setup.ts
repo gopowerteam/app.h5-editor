@@ -54,8 +54,9 @@ export function createSelector(
     backgroundLayer.add(transformer)
     backgroundLayer.draw()
 
-    // 存储选择项
-    if (enabled) {
+    // 可编辑状态为选中
+    // 多节点状态为选中
+    if (enabled || nodes.length > 1) {
         // 设置选择器名称
         transformer.name('selected')
     }
