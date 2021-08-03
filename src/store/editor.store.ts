@@ -1,5 +1,5 @@
 import { createWidget } from '@/editor/data'
-import { HistoryType, WidgetType } from '@/editor/enums'
+import { WidgetType } from '@/editor/enums'
 import { Widget } from '@/editor/model/widget'
 import {
     addWidget,
@@ -12,7 +12,6 @@ import { getLayers, resizeStage } from '@/editor/render/stage'
 import type Konva from 'konva'
 import type { StoreonModule } from 'storeon'
 import { Store, updateState } from '.'
-import * as R from 'ramda'
 import {
     backwardHistory,
     EditorHistory,
@@ -23,10 +22,8 @@ import {
     clearSelector,
     createSelector
 } from '@/editor/render/setups/selector.setup'
-import { classToPlain } from 'class-transformer'
 import type { TextWidget } from '@/editor/model/text-widget'
 import type { ImageWidget } from '@/editor/model/image-widget'
-import { of } from 'rxjs'
 
 export interface EditorState {
     stage: Konva.Stage
@@ -165,6 +162,7 @@ function onUpdateZoom(state: EditorState, zoom: number) {
  * @param widget
  */
 function onUpdateWidget(state: EditorState, widget: Partial<Widget>) {
+    // 获取目标组件
     const target = state.widgets.find((x) => x.id === widget.id)
 
     // 更新数据源

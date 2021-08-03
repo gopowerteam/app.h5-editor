@@ -74,18 +74,23 @@ widgets.subscribe((value) => {
 })
 
 function onPropertyChange() {
+    // 获取更改值
     const target = R.pick(Object.keys(property), currentWidget.property)
+    // 确认是否手动更改
     if (JSON.stringify(property) === JSON.stringify(target)) {
         return
     }
+    // 渲染更改值
     renderWidgetProperty()
-    dispatch(
-        'updateWidget',
-        (currentWidget.property = {
+    // 通知更改数据
+
+    dispatch('updateWidget', {
+        id: currentWidget.id,
+        property: {
             ...currentWidget.property,
             ...property
-        })
-    )
+        }
+    })
 }
 
 function renderWidgetProperty() {

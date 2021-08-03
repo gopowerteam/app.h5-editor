@@ -1,6 +1,5 @@
 import { TextWidgetEvent } from '@/editor/enums'
 import type Konva from 'konva'
-
 /**
  * 创建编辑区域
  * @param node
@@ -40,7 +39,7 @@ function createTextarea(node: Konva.Text) {
     textarea.style.textAlign = node.align()
     textarea.style.color = node.fill()
 
-    textarea.style.transform = `rotateZ(${node.rotation()}deg)`
+    textarea.style.transform = `rotateZ(${node.rotation()}deg) scale(${layer.scaleX()})`
 
     // reset height
     // textarea.style.height = 'auto'
