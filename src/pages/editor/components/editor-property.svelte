@@ -1,5 +1,5 @@
 <template>
-    <div class="property-container">
+    <div class="property-container" on:keydown="{(e) => e.stopPropagation()}">
         <Tabs>
             <Tab label="属性" />
             <Tab label="页面" />

@@ -51,7 +51,7 @@ export function addWidget(
     clearSelector(stage)
     // 创建选择器
     if (selectd) {
-        createSelector(backgroundLayer, node, true)
+        createSelector(backgroundLayer, [node], true)
     }
     // 安装监听器
     setupListener(node)

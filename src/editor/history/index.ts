@@ -1,31 +1,68 @@
 import type { EditorState } from '@/store/editor.store'
-import { HistoryType } from '../enums'
-import {
-    createWidgetHistory,
-    revertWidgetHistory,
-    updateWidgetHistory
-} from './widget.history'
+import { classToPlain, plainToClass } from 'class-transformer'
+import { Widget } from '../model/widget'
 
 export type EditorHistory = {
-    type: HistoryType
-    data?:
-        | Record<string, any>[]
-        | {
-              width: number
-              height: number
-          }
+    size: {
+        width: number
+        height: number
+    }
+    widgets: Record<string, any>[]
+    selected: string[]
 }
 
+function createHistory(state: EditorState) {
+    // 记录组件状态
+    const widgets = classToPlain<Widget>(state.widgets)
+
+    // 记录舞台状态
+    const size = {
+        width: state.stage.width(),
+        height: state.stage.height()
+    }
+
+    // 记录选择项状态
+    const selected = [...state.selected]
+
+    return {
+        widgets,
+        size,
+        selected
+    }
+}
+
+function revertHistory(history: EditorHistory) {
+    // 恢复组件记录
+    const widgets = plainToClass(Widget, history.widgets)
+
+    // 恢复舞台记录
+    const size = history.size
+
+    // 恢复选择项记录
+    const selected = history.selected
+
+    return {
+        widgets,
+        size,
+        selected
+    }
+}
 /**
  * 更新历史
  */
-export function updateHistory(type: HistoryType, state: EditorState) {
-    // 历史更新操作
-    const action = {
-        [HistoryType.widget]: updateWidgetHistory
-    }
+export function updateHistory(state: EditorState) {
+    // 清空可前进历史
+    state.history.forward = []
 
-    return action[type](state)
+    // 更新可后退历史
+    state.history.backward.push(createHistory(state))
+
+    return {
+        history: {
+            forward: state.history.forward,
+            backward: state.history.backward
+        }
+    }
 }
 
 /**
@@ -37,24 +74,11 @@ export function backwardHistory(state: EditorState) {
 
     if (!history) return
 
-    // 恢复历史数据
-    const revertHistory = {
-        [HistoryType.widget]: revertWidgetHistory
-    }
-
-    // 创建历史数据
-    const createHistory = {
-        [HistoryType.widget]: createWidgetHistory
-    }
-
     return {
-        ...revertHistory[history.type](history),
+        ...revertHistory(history),
         history: {
             backward: [...state.history.backward],
-            forward: [
-                ...state.history.forward,
-                createHistory[history.type](state)
-            ]
+            forward: [...state.history.forward, createHistory(state)]
         }
     }
 }
@@ -68,23 +92,10 @@ export function forwardHistory(state: EditorState) {
 
     if (!history) return
 
-    // 恢复历史数据
-    const revertHistory = {
-        [HistoryType.widget]: revertWidgetHistory
-    }
-
-    // 创建历史数据
-    const createHistory = {
-        [HistoryType.widget]: createWidgetHistory
-    }
-
     return {
-        ...revertHistory[history.type](history),
+        ...revertHistory(history),
         history: {
-            backward: [
-                ...state.history.backward,
-                createHistory[history.type](state)
-            ],
+            backward: [...state.history.backward, createHistory(state)],
             forward: [...state.history.forward]
         }
     }

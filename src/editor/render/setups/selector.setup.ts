@@ -34,7 +34,7 @@ function getAnchors(type) {
  */
 export function createSelector(
     backgroundLayer: Konva.Layer,
-    target: Konva.Node | Konva.Node[],
+    nodes: Konva.Node[],
     enabled: boolean = false
 ) {
     const transformer = new Konva.Transformer({
@@ -43,11 +43,10 @@ export function createSelector(
         rotateEnabled: enabled
     })
 
-    if (target instanceof Konva.Node) {
-        transformer.enabledAnchors(getAnchors(target.getClassName()))
+    if (nodes.length === 1) {
+        const [node] = nodes
+        transformer.enabledAnchors(getAnchors(node.getClassName()))
     }
-
-    const nodes = target instanceof Konva.Node ? [target] : target
 
     transformer.nodes(nodes)
 
@@ -83,7 +82,7 @@ export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
 
     node.on('mouseenter', (e) => {
         if (!getNodeSelector(stage, node)) {
-            createSelector(backgroundLayer, node, false)
+            createSelector(backgroundLayer, [node], false)
         }
     })
 
@@ -109,7 +108,7 @@ export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
             if (e.evt.ctrlKey && activeTransformer) {
                 return [...activeTransformer.nodes(), node]
             } else {
-                return node
+                return [node]
             }
         }
 
@@ -118,9 +117,12 @@ export function setupNodeSelector(stage: Konva.Stage, node: Konva.Node) {
         // 清除选择器
         clearSelector(stage)
         // 创建选择器
-        createSelector(backgroundLayer, nodes, nodes instanceof Konva.Node)
+        createSelector(backgroundLayer, nodes, nodes.length === 1)
         // 更新选中节点
-        store.dispatch('updateSelected', [node])
+        store.dispatch(
+            'updateSelected',
+            nodes.map((node) => node.id())
+        )
         // 开启resize&rotate
         // transformer.resizeEnabled(true)
         // transformer.rotateEnabled(true)
@@ -135,15 +137,21 @@ export function setupStageSelector(stage: Konva.Stage) {
 
     // 安装选择器
     stage.on('mousedown', (e) => {
-        // 获取当前可操作点击对象
-        const widget = contentLayer.findOne(
-            (node) =>
-                node === e.target && !backgroundNodes.includes(node.name())
-        )
-        // 非可选择对象则去除selector
-        if (!widget) {
+        // 点击舞台删除所有选择器
+        if (e.target === stage) {
             clearSelector(stage)
-            // 更新选中节点
+            store.dispatch('updateSelected', [])
+            return
+        }
+
+        // 获取当前可操作点击对象
+        const node = contentLayer.findOne((x) =>
+            backgroundNodes.includes(e.target.name())
+        )
+
+        // 非可选择对象则去除selector
+        if (node) {
+            clearSelector(stage)
             store.dispatch('updateSelected', [])
             return
         }

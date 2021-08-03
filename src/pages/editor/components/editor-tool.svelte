@@ -1,5 +1,7 @@
 <template>
-    <div class="tool-container absolute inset-0 flex flex-col items-center">
+    <div
+        class="tool-container absolute inset-0 flex flex-col items-center"
+        on:keydown="{(e) => e.stopPropagation()}">
         <div class="history mb-10">
             <div
                 class:disabled="{$history.backward.length === 0}"

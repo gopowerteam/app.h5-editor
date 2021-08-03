@@ -60,18 +60,21 @@ export function setupListener(node: Konva.Node) {
     // 监听尺寸变化
     node.on('transformend', () => {
         updateWidget(node, {
-            width: node.width(),
-            height: node.height(),
-            scaleX: node.scaleX(),
-            scaleY: node.scaleY()
+            x: Math.round(node.x()),
+            y: Math.round(node.y()),
+            width: Math.round(node.width()),
+            height: Math.round(node.height()),
+            scaleX: Math.round(node.scaleX()),
+            scaleY: Math.round(node.scaleY()),
+            rotation: Math.round(node.rotation())
         })
     })
 
     // 监听位置变化
     node.on('dragend', () => {
         updateWidget(node, {
-            x: node.x(),
-            y: node.y()
+            x: Math.round(node.x()),
+            y: Math.round(node.y())
         })
     })
 

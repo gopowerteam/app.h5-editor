@@ -1,6 +1,6 @@
-import { appConfig } from "@/config/app.config"
-import { store } from "@/store"
-import Konva from "konva"
+import { appConfig } from '@/config/app.config'
+import { store } from '@/store'
+import Konva from 'konva'
 
 /**
  * 重绘舞台尺寸
@@ -24,7 +24,6 @@ export function resizeStage(stage: Konva.Stage) {
 
     contentLayer.draw()
 }
-
 
 /**
  * 创建舞台
@@ -81,6 +80,11 @@ function createLayers(stage: Konva.Stage) {
         }
     })
 
+    store.dispatch('updateSize', {
+        width,
+        height
+    })
+
     // 创建背景布局
     const backgroundLayer = new Konva.Layer({ name: 'background' })
 
@@ -97,7 +101,7 @@ export function getLayers() {
     const { stage } = store.get()
 
     if (!stage) {
-        throw "请初始化Stage"
+        throw '请初始化Stage'
     }
 
     const layers = stage.getLayers()

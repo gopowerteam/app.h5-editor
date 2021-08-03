@@ -19,15 +19,23 @@ import {
     forwardHistory,
     updateHistory
 } from '@/editor/history'
-import { clearSelector } from '@/editor/render/setups/selector.setup'
+import {
+    clearSelector,
+    createSelector
+} from '@/editor/render/setups/selector.setup'
 import { classToPlain } from 'class-transformer'
 import type { TextWidget } from '@/editor/model/text-widget'
 import type { ImageWidget } from '@/editor/model/image-widget'
+import { of } from 'rxjs'
 
 export interface EditorState {
     stage: Konva.Stage
     zoom: number
-    selected: Konva.Node[]
+    size: {
+        width: number
+        height: number
+    }
+    selected: string[]
     copied: Konva.Node[]
     widgets: Widget[]
     history: {
@@ -38,6 +46,7 @@ export interface EditorState {
 
 const state: EditorState = {
     stage: undefined,
+    size: undefined,
     selected: [],
     copied: [],
     zoom: 1,
@@ -50,8 +59,9 @@ const state: EditorState = {
 
 export interface EditorEvents {
     updateStage: Konva.Stage
+    updateSize: { width: number; height: number }
     updateWidgets: Widget[]
-    updateSelected: Konva.Node[]
+    updateSelected: string[]
     updateCopied: Konva.Node[]
     updateWidget: Partial<TextWidget | ImageWidget>
     updateZoom: number
@@ -60,8 +70,6 @@ export interface EditorEvents {
     backward: void
     forward: void
 }
-
-const a = R.curry(updateHistory)(HistoryType.stage)
 
 /**
  * 数据模块
@@ -74,16 +82,22 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
         ...state,
         stage
     }))
+    store.on('updateSize', (state, size) => ({
+        ...state,
+        size
+    }))
     // 更新数据源
     store.on('updateWidgets', (state, widget) => ({
         ...state,
         widget
     }))
     // 更新选择项
-    store.on('updateSelected', (state, widgets) => ({
-        ...state,
-        selected: widgets
-    }))
+    store.on('updateSelected', (state, widgets) => {
+        return {
+            ...state,
+            selected: widgets
+        }
+    })
     // 更新复制项
     store.on('updateCopied', (state, widgets) => ({
         ...state,
@@ -93,7 +107,7 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
     store.on(
         'updateWidget',
         updateState(onUpdateWidget, {
-            before: [R.curry(updateHistory)(HistoryType.widget)]
+            before: [updateHistory]
         })
     )
     // 更新数据源
@@ -112,14 +126,14 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
     store.on(
         'createWidget',
         updateState(onCreateWidget, {
-            before: [R.curry(updateHistory)(HistoryType.widget)]
+            before: [updateHistory]
         })
     )
     // 删除组件
     store.on(
         'deleteWidget',
         updateState(onDeleteWidget, {
-            before: [R.curry(updateHistory)(HistoryType.widget)]
+            before: [updateHistory]
         })
     )
 }
@@ -187,7 +201,7 @@ function onCreateWidget(state: EditorState, value: Widget | WidgetType) {
 
     return {
         widgets: [...widgets, data],
-        selected: [widget]
+        selected: [widget.id()]
     }
 }
 
@@ -208,9 +222,9 @@ function onDeleteWidget(state: EditorState, id: string) {
 }
 
 function onRerenderStage(state: EditorState) {
-    const { stage, widgets } = state
+    const { stage, widgets, selected } = state
 
-    const { content: contentLayer } = getLayers()
+    const { content: contentLayer, background: backgroundLayer } = getLayers()
 
     // 销毁所有子元素
     contentLayer.destroyChildren()
@@ -218,10 +232,20 @@ function onRerenderStage(state: EditorState) {
     clearSelector(stage)
     // 创建背景
     createBackground()
+
     // 重新生成组件
-    renderWidgets(state.widgets).forEach(
+    renderWidgets(widgets).forEach(
         (
             widget // 更新视图层
         ) => addWidget(stage, widget, false)
     )
+
+    // 重新设置选择项
+    if (selected.length) {
+        createSelector(
+            backgroundLayer,
+            selected.map((id) => stage.findOne(`#${id}`)),
+            selected.length === 1
+        )
+    }
 }

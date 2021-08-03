@@ -13,8 +13,14 @@
 </template>
 
 <style lang="less">
-:global(.widget-property .bx--tab-content) {
-    padding: 0 !important;
+:global(.widget-property) {
+    :global(.bx--tab-content) {
+        padding: 0;
+    }
+
+    :global(.bx--accordion__content) {
+        padding: 0;
+    }
 }
 </style>
 
@@ -25,7 +31,7 @@ import NodeWidgetProerpty from './node-widget-property.svelte'
 import TextWidgetProerpty from './text-widget-property.svelte'
 import ImageWidgetProerpty from './image-widget-property.svelte'
 
-const { selected } = useStore((state) => state.editor)
+const { selected, stage } = useStore((state) => state.editor)
 
 const panels = [
     {
@@ -46,10 +52,10 @@ const panels = [
 ]
 
 function getSelectType() {
-    const [current] = $selected
+    const [id] = $selected
 
-    if (!current) return
+    if (!id) return
 
-    return current.getClassName()
+    return $stage.findOne(`#${id}`).getClassName()
 }
 </script>
