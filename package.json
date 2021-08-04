@@ -28,7 +28,6 @@
         "tslib": "^2.2.0",
         "typescript": "^4.3.2",
         "vite": "^2.3.8",
-        "vite-plugin-environment": "^1.0.1",
         "vite-plugin-svelte-svg": "^1.0.0"
     },
     "dependencies": {
