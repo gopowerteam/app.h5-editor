@@ -33,7 +33,7 @@
     "dependencies": {
         "@easyroute/svelte": "^3.2.0",
         "@gopowerteam/http-request": "^0.2.4",
-        "@gopowerteam/svelte-modal": "0.1.6",
+        "@gopowerteam/svelte-modal": "0.1.7",
         "@storeon/localstorage": "^1.4.0",
         "@storeon/svelte": "^1.0.0",
         "class-transformer": "^0.4.0",

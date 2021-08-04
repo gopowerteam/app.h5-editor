@@ -1,6 +1,6 @@
 <template>
     <EasyrouteProvider router="{router}">
-        <ModalProvider minWidth="{500}">
+        <ModalProvider minWidth="{100}">
             <svelte:component this="{CurrentLayout}" />
         </ModalProvider>
     </EasyrouteProvider>
