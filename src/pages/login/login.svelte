@@ -2,7 +2,7 @@
     <div class="absolute inset-0" bind:this="{background}">
         {#if background}
             <img
-                class="image-background absolute inset-0"
+                class="image-background absolute inset-0 w-full h-full"
                 alt=""
                 on:load="{onImageLoaded}"
                 src="https://source.unsplash.com/random/{background.clientWidth}x{background.clientHeight}" />

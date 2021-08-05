@@ -7,8 +7,8 @@ function createWidgetProperty() {
     const property = new WidgetProperty()
 
     property.id = Math.random().toString(32).slice(2)
-    property.height = 100
-    property.width = 100
+    property.height = 60
+    property.width = 200
     property.opacity = 1
     property.rotation = 0
     property.scaleX = 1
@@ -25,7 +25,7 @@ function createTextProperty(text) {
     property.fill = '#000'
     property.fontFamily = 'Arial'
     property.align = 'left'
-    property.fontSize = 14
+    property.fontSize = 32
     property.fontStyle = ''
     property.text = text
 
