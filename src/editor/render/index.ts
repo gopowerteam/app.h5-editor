@@ -98,11 +98,11 @@ export function getSelectedWidget(stage: Konva.Stage) {
  */
 export function createBackground() {
     const { content: contentLayer } = getLayers()
-    const { width, height, scale } = appConfig.editor.content
+    const { width, height } = appConfig.editor.content
     // 创建背景图形
     const background = new Konva.Rect({
-        width: width / scale,
-        height: height / scale,
+        width: width,
+        height: height,
         fill: '#fff',
         name: 'background'
     })

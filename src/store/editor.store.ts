@@ -24,6 +24,7 @@ import {
 } from '@/editor/render/setups/selector.setup'
 import type { TextWidget } from '@/editor/model/text-widget'
 import type { ImageWidget } from '@/editor/model/image-widget'
+import { appConfig } from '@/config/app.config'
 
 export interface EditorState {
     stage: Konva.Stage
@@ -146,9 +147,10 @@ export const editorStore: Store<EditorState, EditorEvents> = {
  * @param zoom
  */
 function onUpdateZoom(state: EditorState, zoom: number) {
+    const { scale } = appConfig.editor.content
     const { content: contentLayer } = getLayers()
-    contentLayer.scaleX(zoom)
-    contentLayer.scaleY(zoom)
+    contentLayer.scaleX((1 / scale) * zoom)
+    contentLayer.scaleY((1 / scale) * zoom)
     resizeStage(state.stage)
 
     return {

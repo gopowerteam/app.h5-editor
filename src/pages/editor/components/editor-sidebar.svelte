@@ -122,10 +122,8 @@ async function onbeforeCreateImage() {
 
             return new Promise((resolve) => {
                 image.onload = () => {
-                    widget.property.width =
-                        image.width / appConfig.editor.content.scale
-                    widget.property.height =
-                        image.height / appConfig.editor.content.scale
+                    widget.property.width = image.width
+                    widget.property.height = image.height
                     resolve(widget)
                 }
 
