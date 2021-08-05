@@ -7,7 +7,7 @@
 <script lang="ts">
 import { setContext } from 'svelte'
 
-export let labelWidth = 50
+export let labelWidth = 60
 export let layout: 'float' | 'inline' = 'inline'
 
 setContext('config', {

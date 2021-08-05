@@ -2,7 +2,7 @@ import { appConfig } from '@/config/app.config'
 import cloudbase from '@cloudbase/js-sdk'
 
 export class Cloudbase {
-    private static app
+    private static app: cloudbase.app.App
 
     public static init() {
         if (!Cloudbase.app) {
@@ -21,5 +21,9 @@ export class Cloudbase {
         }
 
         return Cloudbase.app
+    }
+
+    public static getUser() {
+        return Cloudbase.get().auth({ persistence: 'local' }).currentUser
     }
 }

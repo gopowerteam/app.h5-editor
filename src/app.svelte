@@ -5,6 +5,7 @@
         </ModalProvider>
     </EasyrouteProvider>
 
+    <NotificationCenter />
     <Theme theme="white" tokens="{theme}" />
 </template>
 
@@ -17,7 +18,7 @@ import { layouts } from '@/layouts'
 
 import router from '@/router'
 import { ModalProvider } from '@gopowerteam/svelte-modal'
-
+import NotificationCenter from '@/shared/components/notification-center.svelte'
 // 安装Store
 provideStore()
 

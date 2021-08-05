@@ -12,7 +12,7 @@
             <div class="form-item_split flex items-center justify-center">
                 :
             </div>
-            <div class="form-item_content">
+            <div class="form-item_content flex-auto">
                 <slot />
             </div>
         {/if}
