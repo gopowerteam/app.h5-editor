@@ -32,7 +32,7 @@ function createImageProperty(url) {
 export function createImageWidget(url: string) {
     const widget = new ImageWidget()
 
-//     widget.quoteType = quoteType
+    //     widget.quoteType = quoteType
 
     widget.property = createWidgetProperty()
 
