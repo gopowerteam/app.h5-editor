@@ -77,8 +77,8 @@ function createLayers(stage: Konva.Stage) {
         clip: {
             x: 0,
             y: 0,
-            width,
-            height
+            width: width / scale,
+            height: height / scale
         }
     })
 
