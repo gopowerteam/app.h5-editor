@@ -4,7 +4,8 @@ export const routes = [
     {
         path: '/',
         component: () => import('@/pages/login/login.svelte'),
-        name: 'login'
+        name: 'login',
+        auth: false
     },
     {
         path: '/dashboard',

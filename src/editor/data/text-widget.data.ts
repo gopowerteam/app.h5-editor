@@ -32,10 +32,10 @@ function createTextProperty(text) {
     return property
 }
 
-export function createTextWidget(text = '请输入文本', quoteType?: QuoteType) {
+export function createTextWidget(text = '请输入文本') {
     const widget = new TextWidget()
 
-    widget.quoteType = quoteType
+    // widget.quoteType = quoteType
 
     widget.property = createWidgetProperty()
 

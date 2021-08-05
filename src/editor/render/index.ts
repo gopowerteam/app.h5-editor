@@ -1,6 +1,9 @@
 import { appConfig } from '@/config/app.config'
 import Konva from 'konva'
+import type { Image } from 'konva/lib/shapes/Image'
 import { WidgetType } from '../enums'
+import type { ImageWidget } from '../model/image-widget'
+import type { TextWidget } from '../model/text-widget'
 import type { Widget } from '../model/widget'
 import { setupListener } from './setups/listener.setup'
 import {
@@ -10,13 +13,15 @@ import {
     setupNodeSelector
 } from './setups/selector.setup'
 import { getLayers } from './stage'
+import { renderImageWidget } from './widgets/image.render'
 import { renderTextWidget } from './widgets/text.render'
 
 /**
  * 渲染规则
  */
 const renderRules = {
-    [WidgetType.text]: renderTextWidget
+    [WidgetType.text]: renderTextWidget,
+    [WidgetType.image]: renderImageWidget
 }
 
 /**
@@ -27,8 +32,13 @@ const renderRules = {
 export function renderWidget(data: Widget) {
     // 获取渲染函数
     const render = renderRules[data.widgetType]
+
+    if (!render) {
+        throw Error('组件类型不存在')
+    }
+
     // 获取渲染器
-    const node = render(data)
+    const node = render(data as any)
     // 开启拖拽
     node.draggable(true)
 
@@ -88,11 +98,11 @@ export function getSelectedWidget(stage: Konva.Stage) {
  */
 export function createBackground() {
     const { content: contentLayer } = getLayers()
-    const { width, height } = appConfig.editor.content
+    const { width, height, scale } = appConfig.editor.content
     // 创建背景图形
     const background = new Konva.Rect({
-        width,
-        height,
+        width: width / scale,
+        height: height / scale,
         fill: '#fff',
         name: 'background'
     })

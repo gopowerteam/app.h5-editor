@@ -178,12 +178,20 @@ function onPickColor() {
             startColor: property.fill
         },
         event: {
-            colorChange: ({ detail: { r, g, b, a } }) => {
-                const rValue = r.toString(16)
-                const gValue = g.toString(16)
-                const bValue = b.toString(16)
-                const alpha = Math.round(a * 255).toString(16)
+            colorChange: ({
+                detail: { r, g, b, a }
+            }: {
+                detail: { r: number; g: number; b: number; a: number }
+            }) => {
+                const toHexValue = (n: number) =>
+                    n.toString(16).padStart(2, '0')
+                const rValue = toHexValue(r)
+                const gValue = toHexValue(g)
+                const bValue = toHexValue(b)
+                const alpha = toHexValue(Math.round(a * 255))
+
                 property.fill = `#${rValue}${gValue}${bValue}${alpha}`
+
                 onPropertyChange()
             }
         }

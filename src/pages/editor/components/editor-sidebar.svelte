@@ -14,7 +14,8 @@
         <div class="widget-panel flex flex-auto flex-wrap">
             {#each currentWidgets as widget}
                 <div
-                    on:click="{() => dispatch('createWidget', widget.event)}"
+                    on:click="{() =>
+                        onCreateWidget(widget.event, widget.before)}"
                     class="widget bg-gray-100 hover:bg-gray-50 hover:text-blue-500 cursor-pointer">
                     <svelte:component this="{widget.icon}" />
                     <div class="pt-2 text-xs">{widget.label}</div>
@@ -47,9 +48,6 @@
         margin: 10px;
         padding: 20px;
         text-align: center;
-
-        &:hover {
-        }
     }
 }
 </style>
@@ -59,8 +57,14 @@ import { WidgetType } from '@/editor/enums'
 import SettingsAdjust from 'carbon-icons-svelte/lib/SettingsAdjust24'
 import MediaLibrary from 'carbon-icons-svelte/lib/MediaLibrary24'
 import TextScale from 'carbon-icons-svelte/lib/TextScale20'
-import Image from 'carbon-icons-svelte/lib/Image20'
+import Picture from 'carbon-icons-svelte/lib/Image20'
 import { useStore } from '@/store'
+import * as R from 'ramda'
+import { useModal } from '@gopowerteam/svelte-modal'
+import UploadCard from '@/shared/components/upload-card.svelte'
+import { createWidget } from '@/editor/data'
+import { appConfig } from '@/config/app.config'
+const modal = useModal()
 
 const { dispatch } = useStore((state) => state.editor)
 let currentMenu = 'base'
@@ -77,7 +81,8 @@ const baseWidgets = [
     {
         label: '图片',
         event: WidgetType.image,
-        icon: Image
+        icon: Picture,
+        before: onbeforeCreateImage
     }
 ]
 
@@ -98,4 +103,43 @@ const widgetMenus = [
         widgets: quoteWidgets
     }
 ]
+
+async function onbeforeCreateImage() {
+    return modal
+        .open({
+            component: UploadCard,
+            width: 500,
+            props: {
+                labelText: '拖放文件或者通过点击进行上传'
+            },
+            title: '上传'
+        })
+        .then(({ url }) => {
+            // 创建图片组件数据
+            const widget = createWidget(WidgetType.image, url)
+
+            const image = new Image()
+
+            return new Promise((resolve) => {
+                image.onload = () => {
+                    widget.property.width =
+                        image.width / appConfig.editor.content.scale
+                    widget.property.height =
+                        image.height / appConfig.editor.content.scale
+                    resolve(widget)
+                }
+
+                image.src = url
+            })
+        })
+}
+
+async function onCreateWidget(event, before) {
+    const action = before || R.identity
+    const value = await action(event)
+
+    if (value) {
+        dispatch('createWidget', value)
+    }
+}
 </script>

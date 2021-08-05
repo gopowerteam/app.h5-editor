@@ -8,7 +8,7 @@ import Konva from 'konva'
 export function resizeStage(stage: Konva.Stage) {
     const container = stage.container()
     const { content: contentLayer } = getLayers()
-    const { width, height } = appConfig.editor.content
+    const { width, height, scale } = appConfig.editor.content
 
     // 更新舞台尺寸
     stage.width(container.offsetWidth)
@@ -16,10 +16,12 @@ export function resizeStage(stage: Konva.Stage) {
 
     // 更新图层位置
     contentLayer.x(
-        container.offsetWidth / 2 - (width * contentLayer.scaleX()) / 2
+        container.offsetWidth / 2 -
+            ((width / scale) * contentLayer.scaleX()) / 2
     )
     contentLayer.y(
-        container.offsetHeight / 2 - (height * contentLayer.scaleY()) / 2
+        container.offsetHeight / 2 -
+            ((height / scale) * contentLayer.scaleY()) / 2
     )
 
     contentLayer.draw()
@@ -66,12 +68,12 @@ export function createStage(container) {
  */
 function createLayers(stage: Konva.Stage) {
     // 获取图层尺寸
-    const { width, height } = appConfig.editor.content
+    const { width, height, scale } = appConfig.editor.content
     // 创建内容布局
     const contentLayer = new Konva.Layer({
         name: 'content',
-        x: stage.width() / 2 - width / 2,
-        y: stage.height() / 2 - height / 2,
+        x: stage.width() / 2 - width / scale / 2,
+        y: stage.height() / 2 - height / scale / 2,
         clip: {
             x: 0,
             y: 0,

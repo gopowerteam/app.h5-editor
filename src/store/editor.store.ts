@@ -1,5 +1,5 @@
 import { createWidget } from '@/editor/data'
-import { WidgetType } from '@/editor/enums'
+import type { WidgetType } from '@/editor/enums'
 import { Widget } from '@/editor/model/widget'
 import {
     addWidget,
@@ -190,8 +190,8 @@ function onUpdateWidget(state: EditorState, widget: Partial<Widget>) {
  */
 function onCreateWidget(state: EditorState, value: Widget | WidgetType) {
     const { stage, widgets } = state
-    // 创建组件数据
-    const data = value instanceof Widget ? value : createWidget(WidgetType.text)
+    // 创建组件数据a
+    const data = value instanceof Widget ? value : createWidget(value)
     // 创建组件
     const widget = renderWidget(data)
     // 更新视图层

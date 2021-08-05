@@ -5,8 +5,9 @@ export const appConfig = {
     },
     editor: {
         content: {
-            width: 360,
-            height: 640
+            scale: 3,
+            width: 1080,
+            height: 1920
         }
     }
 }
