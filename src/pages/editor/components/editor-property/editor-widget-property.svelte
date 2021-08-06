@@ -1,13 +1,21 @@
 <template>
     <div class="widget-property">
         <Accordion size="sm">
-            {#each panels as item, index}
-                {#if item.filter()}
-                    <AccordionItem title="{item.label}" open>
-                        <svelte:component this="{item.component}" />
-                    </AccordionItem>
-                {/if}
-            {/each}
+            {#if widgetType}
+                <AccordionItem title="基础属性" open>
+                    <NodeWidgetProerpty />
+                </AccordionItem>
+            {/if}
+            {#if widgetType === 'Text'}
+                <AccordionItem title="文本属性" open>
+                    <TextWidgetProerpty />
+                </AccordionItem>
+            {/if}
+            {#if widgetType === 'Image'}
+                <AccordionItem title="文本属性" open>
+                    <ImageWidgetProerpty />
+                </AccordionItem>
+            {/if}
         </Accordion>
     </div>
 </template>
@@ -32,30 +40,15 @@ import TextWidgetProerpty from './text-widget-property.svelte'
 import ImageWidgetProerpty from './image-widget-property.svelte'
 
 const { selected, stage } = useStore((state) => state.editor)
+let widgetType = ''
 
-const panels = [
-    {
-        label: '基础属性',
-        component: NodeWidgetProerpty,
-        filter: () => true
-    },
-    {
-        label: '文本属性',
-        component: TextWidgetProerpty,
-        filter: () => getSelectType() === 'Text'
-    },
-    {
-        label: '图片属性',
-        component: ImageWidgetProerpty,
-        filter: () => getSelectType() === 'Image'
+selected.subscribe((selected) => {
+    if (selected.length === 1) {
+        const [target] = selected
+        const type = $stage.findOne(`#${selected[0]}`).getClassName()
+        widgetType = type
+    } else {
+        widgetType = ''
     }
-]
-
-function getSelectType() {
-    const [id] = $selected
-
-    if (!id) return
-
-    return $stage.findOne(`#${id}`).getClassName()
-}
+})
 </script>

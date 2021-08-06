@@ -64,7 +64,7 @@ export interface EditorEvents {
     updateWidget: Partial<TextWidget | ImageWidget>
     updateZoom: number
     createWidget: Widget | WidgetType
-    deleteWidget: string
+    deleteWidget: string | string[]
     backward: void
     forward: void
 }
@@ -211,13 +211,20 @@ function onCreateWidget(state: EditorState, value: Widget | WidgetType) {
  * @param id
  * @returns
  */
-function onDeleteWidget(state: EditorState, id: string) {
+function onDeleteWidget(state: EditorState, id: string | string[]) {
     const { stage } = state
     // 更新视图层
-    removeWidget(stage, id)
+    // TODO: 删除后历史记录异常
+    const target = id instanceof Array ? id : [id]
+
+    target.forEach((value) => {
+        removeWidget(stage, value)
+    })
+
     // 更新数据源
     return {
-        widgets: state.widgets.filter((x) => x.property.id !== id)
+        selected: [],
+        widgets: state.widgets.filter((x) => !target.includes[x.id])
     }
 }
 

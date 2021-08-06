@@ -90,7 +90,15 @@ let property: TextProperty = {
  * @param widgets
  */
 function getSelectedWidget(widgets) {
-    return widgets.find((x) => $selected.length === 1 && x.id === $selected[0])
+    const widget = widgets.find(
+        (x) => $selected.length === 1 && x.id === $selected[0]
+    )
+
+    if (widget && $stage.findOne(`#${widget.id}`).getClassName() !== 'Text') {
+        return
+    }
+
+    return widget
 }
 
 /**

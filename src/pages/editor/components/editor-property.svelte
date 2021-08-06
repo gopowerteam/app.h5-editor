@@ -19,6 +19,9 @@
 </template>
 
 <style lang="less">
+.property-container {
+    user-select: none;
+}
 :global(.property-container > .bx--tabs li) {
     width: 33%;
     border-top: 0;

@@ -1,8 +1,8 @@
 <template>
     <div
-        class="tool-container absolute inset-0 flex flex-col items-center"
+        class="tool-container absolute inset-0 flex flex-col items-center space-y-5"
         on:keydown="{(e) => e.stopPropagation()}">
-        <div class="history mb-10">
+        <div class="history">
             <div
                 class:disabled="{$history.backward.length === 0}"
                 class="icon-button"
@@ -27,6 +27,22 @@
             <div class="icon-button" on:click="{() => onChangeZoom()}">
                 <svelte:component this="{Reset}" />
             </div>
+        </div>
+        <div class="widget">
+            {#if $selected.length > 0}
+                <div class="icon-button" on:click="{() => onDelete()}">
+                    <svelte:component this="{Delete}" />
+                </div>
+            {/if}
+
+            {#if $selected.length === 1}
+                <div class="icon-button" on:click="{() => onMoveUp()}">
+                    <svelte:component this="{ArrowUp}" />
+                </div>
+                <div class="icon-button" on:click="{() => onMoveDown()}">
+                    <svelte:component this="{ArrowDown}" />
+                </div>
+            {/if}
         </div>
     </div>
 </template>
@@ -69,10 +85,16 @@ import Subtract from 'carbon-icons-svelte/lib/Subtract16'
 import Reset from 'carbon-icons-svelte/lib/Reset16'
 import BackwardRotate from 'carbon-icons-svelte/lib/Rotate16'
 import ForwardRotate from 'carbon-icons-svelte/lib/WatsonHealthRotate_18016'
+import Delete from 'carbon-icons-svelte/lib/Delete16'
+import ArrowUp from 'carbon-icons-svelte/lib/ArrowUp16'
+import ArrowDown from 'carbon-icons-svelte/lib/ArrowDown16'
 
 import { useStore } from '@/store'
+import { getSelectedWidget } from '@/editor/render'
 
-const { history, zoom, dispatch } = useStore((state) => state.editor)
+const { stage, selected, history, zoom, dispatch } = useStore(
+    (state) => state.editor
+)
 
 const zoomStep = 0.1
 const minZoom = 0.5
@@ -88,5 +110,33 @@ function onChangeZoom(vector?: 1 | -1) {
         : 1
 
     dispatch('updateZoom', value)
+}
+
+function onDelete() {
+    // 获取选择的组件
+    const widgets = getSelectedWidget($stage)
+
+    dispatch(
+        'deleteWidget',
+        widgets.map((widget) => widget.id())
+    )
+}
+
+function onMoveUp() {
+    // 获取选择的组件
+    const widgets = getSelectedWidget($stage)
+    const [widget] = widgets
+
+    widget.moveUp()
+}
+
+function onMoveDown() {
+    // 获取选择的组件
+    const widgets = getSelectedWidget($stage)
+    const [widget] = widgets
+
+    if (widget.zIndex() > 1) {
+        widget.moveDown()
+    }
 }
 </script>

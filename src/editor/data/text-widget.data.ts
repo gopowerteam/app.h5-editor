@@ -1,4 +1,3 @@
-import type { QuoteType } from '../enums'
 import { TextProperty } from '../model/text-property'
 import { TextWidget } from '../model/text-widget'
 import { WidgetProperty } from '../model/widget-proerpty'

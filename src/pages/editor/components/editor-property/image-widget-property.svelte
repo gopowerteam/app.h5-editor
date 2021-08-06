@@ -36,7 +36,14 @@ let property: ImageProperty = {
  * @param widgets
  */
 function getSelectedWidget(widgets) {
-    return widgets.find((x) => $selected.length === 1 && x.id === $selected[0])
+    const widget = widgets.find(
+        (x) => $selected.length === 1 && x.id === $selected[0]
+    )
+    if (widget && $stage.findOne(`#${widget.id}`).getClassName() !== 'Image') {
+        return
+    }
+
+    return widget
 }
 
 /**
@@ -55,6 +62,7 @@ function updateWidgetProperty() {
 widgets.subscribe((value) => {
     // 获取选中组件
     const widget = getSelectedWidget(value)
+
     // 存储选中组件
     currentWidget = widget
 
@@ -93,7 +101,7 @@ function updateWidgetImage(widget: Konva.Image, url) {
 
         widget.width(image.width)
         widget.height(image.height)
-        
+
         dispatch('updateWidget', {
             id: currentWidget.id,
             property: {
