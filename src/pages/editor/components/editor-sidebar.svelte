@@ -114,7 +114,8 @@ async function onbeforeCreateImage() {
             },
             title: '上传'
         })
-        .then(({ url }) => {
+        .then(({ url }: any = {}) => {
+            if (!url) return
             // 创建图片组件数据
             const widget = createWidget(WidgetType.image, url)
 
