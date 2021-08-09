@@ -15,7 +15,7 @@ function createTextarea(node: Konva.Text) {
     }
     // 创建TextArea
     const textarea = document.createElement('textarea')
-    const container = document.getElementById('convas-container')
+    const container = document.getElementById('canvas-container')
     container.appendChild(textarea)
 
     textarea.value = node.text()

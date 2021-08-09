@@ -2,6 +2,7 @@ import Konva from 'konva'
 import type { TextWidget } from '../../model/text-widget'
 import { setupEditable } from '../setups/editable.setup'
 import * as R from 'ramda'
+import { store } from '@/store'
 
 const MINWIDTH = 100
 const MINHEIGHT = 50
@@ -18,13 +19,18 @@ function setupTransform(node) {
 }
 
 export function renderTextWidget(widget: TextWidget) {
+    const { preview } = store.get()
+
     const node = new Konva.Text({
         ...R.omit(['zIndex'], widget.property),
         ...widget.textProperty
     })
 
     // 设置编辑功能
-    setupEditable(node)
+    if (!preview) {
+        setupEditable(node)
+    }
+
     // 设置缩放处理
     setupTransform(node)
     return node

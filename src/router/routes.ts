@@ -30,6 +30,11 @@ export const routes = [
         }
     },
     {
+        path: '/page-preview',
+        component: () => import('@/pages/page-preview/page-preview.svelte'),
+        name: 'page-preview'
+    },
+    {
         path: '/editor',
         component: () => import('@/pages/editor/editor.svelte'),
         name: 'editor'

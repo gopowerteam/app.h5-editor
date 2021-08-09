@@ -1,6 +1,6 @@
 <template>
     <div
-        id="convas-container"
+        id="canvas-container"
         bind:this="{container}"
         class="content-container absolute inset-0">
     </div>
@@ -24,10 +24,18 @@ import { createStage, getLayers, resizeStage } from '@/editor/render/stage'
 import { setupDeleteListener } from '@/editor/render/setups/delete.setup'
 import { createBackground } from '@/editor/render'
 
+const { dispatch } = useStore((state) => state.editor)
+
 let container: HTMLDivElement
 
 function setupResize(stage: Konva.Stage) {
     window.addEventListener('resize', () => resizeStage(stage))
+}
+
+function setupStage() {
+    dispatch('updatePreview', false)
+    dispatch('updateZoom', 1)
+    dispatch('updateSelected', [])
 }
 
 onMount(() => {
@@ -41,7 +49,8 @@ onMount(() => {
         R.tap(setupCopy),
         R.tap(setupResize),
         R.tap(resizeStage),
-        R.tap(setupDeleteListener)
+        R.tap(setupDeleteListener),
+        R.tap(setupStage)
     )(stage)
 })
 </script>

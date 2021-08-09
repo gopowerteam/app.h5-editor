@@ -1,9 +1,6 @@
 import { appConfig } from '@/config/app.config'
 import Konva from 'konva'
-import type { Image } from 'konva/lib/shapes/Image'
 import { WidgetType } from '../enums'
-import type { ImageWidget } from '../model/image-widget'
-import type { TextWidget } from '../model/text-widget'
 import type { Widget } from '../model/widget'
 import { setupListener } from './setups/listener.setup'
 import {
@@ -15,6 +12,7 @@ import {
 import { getLayers } from './stage'
 import { renderImageWidget } from './widgets/image.render'
 import { renderTextWidget } from './widgets/text.render'
+import { store } from '@/store'
 
 /**
  * 渲染规则
@@ -32,6 +30,7 @@ const renderRules = {
 export function renderWidget(data: Widget) {
     // 获取渲染函数
     const render = renderRules[data.widgetType]
+    const { preview } = store.get()
 
     if (!render) {
         throw Error('组件类型不存在')
@@ -40,7 +39,7 @@ export function renderWidget(data: Widget) {
     // 获取渲染器
     const node = render(data as any)
     // 开启拖拽
-    node.draggable(true)
+    node.draggable(!preview)
 
     return node
 }
@@ -55,12 +54,16 @@ export function addWidget(
     selectd = true
 ) {
     const { content: contentLayer, background: backgroundLayer } = getLayers()
+    const { preview } = store.get()
     // 安装选择器
-    setupNodeSelector(stage, node)
+    if (!preview) {
+        setupNodeSelector(stage, node)
+    }
+
     // 清除选择器
     clearSelector(stage)
     // 创建选择器
-    if (selectd) {
+    if (selectd && !preview) {
         createSelector(backgroundLayer, [node], true)
     }
     // 安装监听器

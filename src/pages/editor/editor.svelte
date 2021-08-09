@@ -86,6 +86,8 @@ function onSave() {
                 type: 'success',
                 message: '保存成功'
             })
+
+            router.push('/page-center')
         })
         .catch(() => {
             openToast({

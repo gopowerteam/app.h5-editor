@@ -8,6 +8,7 @@
             {#each pagesSource as source}
                 <div class="page-item">
                     <div
+                        on:click="{() => onPreviewPage(source._id)}"
                         class="image"
                         style="background-image: url({source.page.background})">
                     </div>
@@ -37,14 +38,27 @@
     border: solid 1px rgba(0, 0, 0, 0.1);
     display: inline-block;
     border-radius: 5px;
-    cursor: pointer;
-    position: relative;
 
     .image {
         width: 180px;
         height: 200px;
-
+        position: relative;
         background-size: 100% auto;
+        cursor: pointer;
+        &:hover {
+            &::after {
+                content: '预览';
+                border-radius: 5px;
+                border: solid 1px rgba(0, 0, 0, 0.5);
+                top: 90px;
+                left: 50px;
+                padding: 8px 20px;
+                position: absolute;
+                background-color: rgba(0, 0, 0, 0.1);
+                box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
+                font-size: 18px;
+            }
+        }
     }
 
     .title {
@@ -103,6 +117,10 @@ function onDeletePage(id) {
                 onLoadPages()
             })
     })
+}
+
+function onPreviewPage(id) {
+    router.push(`/page-preview?id=${id}`)
 }
 
 onMount(() => {

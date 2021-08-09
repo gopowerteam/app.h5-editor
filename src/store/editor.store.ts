@@ -47,6 +47,7 @@ export interface EditorState {
         backward: EditorHistory[]
         forward: EditorHistory[]
     }
+    preview: boolean
 }
 
 const state: EditorState = {
@@ -66,7 +67,8 @@ const state: EditorState = {
     history: {
         backward: [],
         forward: []
-    }
+    },
+    preview: false
 }
 
 export interface EditorEvents {
@@ -86,6 +88,7 @@ export interface EditorEvents {
     backward: void
     forward: void
     renderStage: void
+    updatePreview: boolean
 }
 
 /**
@@ -102,6 +105,10 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
     store.on('updateSize', (state, size) => ({
         ...state,
         size
+    }))
+    store.on('updatePreview', (state, preview) => ({
+        ...state,
+        preview
     }))
 
     // 更新数据源
@@ -310,7 +317,7 @@ function onUpdateZindex(state: EditorState) {
 }
 
 function onRerenderStage(state: EditorState) {
-    const { stage, widgets, selected, page } = state
+    const { stage, widgets, selected, page, preview } = state
 
     const { content: contentLayer, background: backgroundLayer } = getLayers()
 
@@ -331,7 +338,7 @@ function onRerenderStage(state: EditorState) {
     )
 
     // 重新设置选择项
-    if (selected.length) {
+    if (!preview && selected.length) {
         createSelector(
             backgroundLayer,
             selected.map((id) => stage.findOne(`#${id}`)),
@@ -343,6 +350,7 @@ function onRerenderStage(state: EditorState) {
         const target = stage.findOne('.background') as Konva.Shape
 
         const image = new Image()
+        image.crossOrigin = 'Anonymous'
         image.onload = () => {
             target.fill('')
             target.fillPatternImage(image)

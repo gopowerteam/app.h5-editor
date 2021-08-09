@@ -16,14 +16,14 @@ function setupTransform(node: Konva.Image) {
 
 export function renderImageWidget(widget: ImageWidget) {
     const image = new Image()
-
+    image.crossOrigin = 'Anonymous'
     const node = new Konva.Image({
         ...R.omit(['zIndex'], widget.property),
         image: image
     })
 
     image.onload = () => {
-        node.draw()
+        // node.draw()
     }
 
     image.src = widget.imageProperty.url
