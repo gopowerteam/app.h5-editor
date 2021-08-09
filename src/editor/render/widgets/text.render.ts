@@ -1,6 +1,7 @@
 import Konva from 'konva'
 import type { TextWidget } from '../../model/text-widget'
 import { setupEditable } from '../setups/editable.setup'
+import * as R from 'ramda'
 
 const MINWIDTH = 100
 const MINHEIGHT = 50
@@ -18,7 +19,7 @@ function setupTransform(node) {
 
 export function renderTextWidget(widget: TextWidget) {
     const node = new Konva.Text({
-        ...widget.property,
+        ...R.omit(['zIndex'], widget.property),
         ...widget.textProperty
     })
 

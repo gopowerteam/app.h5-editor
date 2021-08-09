@@ -25,14 +25,21 @@ import {
 import type { TextWidget } from '@/editor/model/text-widget'
 import type { ImageWidget } from '@/editor/model/image-widget'
 import { appConfig } from '@/config/app.config'
+import * as R from 'ramda'
 
-export interface EditorState {
-    stage: Konva.Stage
-    zoom: number
+type pageConfig = {
+    background: string
     size: {
         width: number
         height: number
     }
+    title: string
+}
+
+export interface EditorState {
+    stage: Konva.Stage
+    zoom: number
+    page: pageConfig
     selected: string[]
     copied: Konva.Node[]
     widgets: Widget[]
@@ -44,7 +51,14 @@ export interface EditorState {
 
 const state: EditorState = {
     stage: undefined,
-    size: undefined,
+    page: {
+        size: {
+            width: appConfig.editor.content.width,
+            height: appConfig.editor.content.height
+        },
+        title: '未命名',
+        background: ''
+    },
     selected: [],
     copied: [],
     zoom: 1,
@@ -58,15 +72,19 @@ const state: EditorState = {
 export interface EditorEvents {
     updateStage: Konva.Stage
     updateSize: { width: number; height: number }
+    updatePage: pageConfig
     updateWidgets: Widget[]
     updateSelected: string[]
     updateCopied: Konva.Node[]
     updateWidget: Partial<TextWidget | ImageWidget>
+    updateBackground: string
+    updateZindex: void
     updateZoom: number
     createWidget: Widget | WidgetType
     deleteWidget: string | string[]
     backward: void
     forward: void
+    renderStage: void
 }
 
 /**
@@ -84,10 +102,16 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
         ...state,
         size
     }))
+
     // 更新数据源
-    store.on('updateWidgets', (state, widget) => ({
+    store.on('updatePage', (state, page) => ({
         ...state,
-        widget
+        page
+    }))
+    // 更新数据源
+    store.on('updateWidgets', (state, widgets) => ({
+        ...state,
+        widgets
     }))
     // 更新选择项
     store.on('updateSelected', (state, widgets) => {
@@ -110,6 +134,8 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
     )
     // 更新数据源
     store.on('updateZoom', updateState(onUpdateZoom))
+    // 更新Zindex
+
     // 撤销操作
     store.on(
         'backward',
@@ -134,6 +160,23 @@ const module: StoreonModule<EditorState, EditorEvents> = (store) => {
             before: [updateHistory]
         })
     )
+    store.on(
+        'updateBackground',
+        updateState(onUpdateBackground, {
+            before: [updateHistory]
+        })
+    )
+    store.on(
+        'updateZindex',
+        updateState(onUpdateZindex, {
+            before: [updateHistory]
+        })
+    )
+
+    store.on('renderStage', (state) => {
+        onRerenderStage(state)
+        return state
+    })
 }
 
 export const editorStore: Store<EditorState, EditorEvents> = {
@@ -228,8 +271,45 @@ function onDeleteWidget(state: EditorState, id: string | string[]) {
     }
 }
 
+function onUpdateBackground(state: EditorState, background: string) {
+    const { stage, page } = state
+
+    const target = stage.findOne('.background') as Konva.Shape
+
+    const image = new Image()
+    image.onload = () => {
+        target.fill('')
+        target.fillPatternImage(image)
+    }
+    image.src = background
+
+    return {
+        page: {
+            size: state.page.size,
+            title: state.page.title,
+            background
+        }
+    }
+}
+
+function onUpdateZindex(state: EditorState) {
+    const { widgets, stage } = state
+    const data = widgets.map(
+        (
+            widget // 更新视图层
+        ) => {
+            const target = stage.findOne(`#${widget.id}`)
+            widget.property.zIndex = target.zIndex()
+
+            return widget
+        }
+    )
+
+    return { widgets: data }
+}
+
 function onRerenderStage(state: EditorState) {
-    const { stage, widgets, selected } = state
+    const { stage, widgets, selected, page } = state
 
     const { content: contentLayer, background: backgroundLayer } = getLayers()
 
@@ -241,7 +321,9 @@ function onRerenderStage(state: EditorState) {
     createBackground()
 
     // 重新生成组件
-    renderWidgets(widgets).forEach(
+    renderWidgets(
+        R.sortWith<Widget>([R.ascend(R.path(['property', 'zIndex']))])(widgets)
+    ).forEach(
         (
             widget // 更新视图层
         ) => addWidget(stage, widget, false)
@@ -254,5 +336,16 @@ function onRerenderStage(state: EditorState) {
             selected.map((id) => stage.findOne(`#${id}`)),
             selected.length === 1
         )
+    }
+
+    if (page && page.background) {
+        const target = stage.findOne('.background') as Konva.Shape
+
+        const image = new Image()
+        image.onload = () => {
+            target.fill('')
+            target.fillPatternImage(image)
+        }
+        image.src = page.background
     }
 }

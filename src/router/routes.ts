@@ -19,12 +19,12 @@ export const routes = [
         }
     },
     {
-        path: '/poster',
-        component: () => import('@/pages/poster-center/poster-center.svelte'),
-        name: 'poster-center',
+        path: '/page-center',
+        component: () => import('@/pages/page-center/page-center.svelte'),
+        name: 'page-center',
         meta: {
             menu: {
-                title: '海报中心',
+                title: '页面中心',
                 icon: AppIcon
             }
         }
@@ -32,15 +32,10 @@ export const routes = [
     {
         path: '/editor',
         component: () => import('@/pages/editor/editor.svelte'),
-        name: 'editor'
-    },
-    {
-        path: '/h5',
-        component: () => import('@/pages/h5-center/h5-center.svelte'),
-        name: 'h5-center',
+        name: 'editor',
         meta: {
             menu: {
-                title: 'H5中心',
+                title: '创作中心',
                 icon: AppIcon
             }
         }

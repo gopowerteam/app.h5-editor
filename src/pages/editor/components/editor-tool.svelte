@@ -128,6 +128,8 @@ function onMoveUp() {
     const [widget] = widgets
 
     widget.moveUp()
+
+    dispatch('updateZindex')
 }
 
 function onMoveDown() {
@@ -137,6 +139,8 @@ function onMoveDown() {
 
     if (widget.zIndex() > 1) {
         widget.moveDown()
+
+        dispatch('updateZindex')
     }
 }
 </script>

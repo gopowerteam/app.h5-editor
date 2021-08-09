@@ -3,19 +3,22 @@ import { classToPlain, plainToClass } from 'class-transformer'
 import { Widget } from '../model/widget'
 
 export type EditorHistory = {
-    size: {
-        width: number
-        height: number
-    }
     widgets: Record<string, any>[]
     selected: string[]
+    page: {
+        title: string
+        size: {
+            width: number
+            height: number
+        }
+        background: string
+    }
 }
 
 function createHistory(state: EditorState) {
     // 记录组件状态
     const widgets = classToPlain<Widget>(state.widgets)
 
-    // 记录舞台状态
     const size = {
         width: state.stage.width(),
         height: state.stage.height()
@@ -24,10 +27,20 @@ function createHistory(state: EditorState) {
     // 记录选择项状态
     const selected = [...state.selected]
 
+    // 记录舞台状态
+    const page = {
+        size: {
+            width: state.stage.width(),
+            height: state.stage.height()
+        },
+        background: state.page.background,
+        title: state.page.title
+    }
+
     return {
         widgets,
-        size,
-        selected
+        selected,
+        page
     }
 }
 
@@ -36,14 +49,14 @@ function revertHistory(history: EditorHistory) {
     const widgets = plainToClass(Widget, history.widgets)
 
     // 恢复舞台记录
-    const size = history.size
+    const page = { ...history.page }
 
     // 恢复选择项记录
     const selected = history.selected
 
     return {
         widgets,
-        size,
+        page,
         selected
     }
 }

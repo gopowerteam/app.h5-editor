@@ -125,7 +125,7 @@ function onLogin() {
             })
 
             dispatch('login', 'admin')
-            router.push('/editor')
+            router.push('/page-center')
         })
         .catch(() => {
             openToast({

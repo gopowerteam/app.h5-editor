@@ -8,4 +8,5 @@ export class WidgetProperty {
     public scaleY: number
     public opacity: number
     public rotation: number
+    public zIndex: number
 }
