@@ -7,17 +7,17 @@ export const routes = [
         name: 'login',
         auth: false
     },
-    {
-        path: '/dashboard',
-        component: () => import('@/pages/dashboard/dashboard.svelte'),
-        name: 'dashboard',
-        meta: {
-            menu: {
-                title: '仪表盘',
-                icon: AppIcon
-            }
-        }
-    },
+    // {
+    //     path: '/dashboard',
+    //     component: () => import('@/pages/dashboard/dashboard.svelte'),
+    //     name: 'dashboard',
+    //     meta: {
+    //         menu: {
+    //             title: '仪表盘',
+    //             icon: AppIcon
+    //         }
+    //     }
+    // },
     {
         path: '/page-center',
         component: () => import('@/pages/page-center/page-center.svelte'),
