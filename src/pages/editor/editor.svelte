@@ -58,7 +58,6 @@ import { openToast } from '@/shared/components/notification-center.svelte'
 import { plainToClass } from 'class-transformer'
 import { Widget } from '@/editor/model/widget'
 export let router
-export let currentRoute
 
 const { page, widgets, dispatch } = useStore((state) => state.editor)
 
