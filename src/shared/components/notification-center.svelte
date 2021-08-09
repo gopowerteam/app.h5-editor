@@ -85,7 +85,7 @@ export function openConfirm(option: ToastOption) {
             ...value,
             {
                 id,
-                title: ToastType[option.type],
+                title: ToastType['info'],
                 type: 'info',
                 message: option.message,
                 timeout: 0,
