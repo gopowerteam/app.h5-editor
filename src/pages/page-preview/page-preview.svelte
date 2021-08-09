@@ -109,7 +109,7 @@ function onExportImage() {
         quality: 1
     })
 
-    download(dataURL, 'stage.png')
+    download(dataURL, `${Date.now()}.png`)
 }
 
 onMount(() => {
