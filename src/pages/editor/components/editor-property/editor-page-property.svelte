@@ -1,7 +1,9 @@
 <template>
     <Form labelWidth="{80}" layout="float">
         <FormItem label="页面标题">
-            <TextInput />
+            <TextInput
+                bind:value="{property.title}"
+                on:change="{onTitleChange}" />
         </FormItem>
         <FormItem label="页面背景">
             <UploadContainer on:upload="{onChangeImage}">
@@ -65,6 +67,13 @@ function onChangeImage({ detail: file }) {
         property.background = url
 
         dispatch('updateBackground', url)
+    })
+}
+
+function onTitleChange() {
+    dispatch('updatePage', {
+        ...$page,
+        title: property.title
     })
 }
 

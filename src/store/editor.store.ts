@@ -78,6 +78,7 @@ export interface EditorEvents {
     updateCopied: Konva.Node[]
     updateWidget: Partial<TextWidget | ImageWidget>
     updateBackground: string
+    updateTitle: string
     updateZindex: void
     updateZoom: number
     createWidget: Widget | WidgetType

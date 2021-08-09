@@ -32,12 +32,6 @@ export const routes = [
     {
         path: '/editor',
         component: () => import('@/pages/editor/editor.svelte'),
-        name: 'editor',
-        meta: {
-            menu: {
-                title: '创作中心',
-                icon: AppIcon
-            }
-        }
+        name: 'editor'
     }
 ]

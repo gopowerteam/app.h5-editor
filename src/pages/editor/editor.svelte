@@ -55,6 +55,8 @@ import { Cloudbase } from '@/shared/services/cloudbase.service'
 import { useStore } from '@/store'
 import { onMount } from 'svelte'
 import { openToast } from '@/shared/components/notification-center.svelte'
+import { plainToClass } from 'class-transformer'
+import { Widget } from '@/editor/model/widget'
 export let router
 export let currentRoute
 
@@ -106,7 +108,10 @@ function onLoad(id) {
 
             if (target) {
                 dispatch('updatePage', target.page)
-                dispatch('updateWidgets', target.widgets)
+                dispatch(
+                    'updateWidgets',
+                    plainToClass(Widget, target.widgets as any[])
+                )
 
                 setTimeout(() => {
                     dispatch('renderStage')

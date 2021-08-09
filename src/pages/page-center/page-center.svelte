@@ -5,25 +5,25 @@
                 >新建</Button>
         </svelte:fragment>
         <div class="container">
-            {#each pagesSource as page}
+            {#each pagesSource as source}
                 <div class="page-item">
                     <div
                         class="image"
-                        style="background-image: url({page.page.background})">
+                        style="background-image: url({source.page.background})">
                     </div>
-                    <div class="title">{page.title}</div>
+                    <div class="title">{source.page.title}</div>
                     <div class="action flex">
                         <Button
                             size="small"
                             kind="ghost"
                             class="flex-1"
-                            on:click="{() => onEditPage(page._id)}"
+                            on:click="{() => onEditPage(source._id)}"
                             >编辑</Button>
                         <Button
                             size="small"
                             kind="ghost"
                             class="flex-1"
-                            on:click="{() => onDeletePage(page._id)}"
+                            on:click="{() => onDeletePage(source._id)}"
                             >删除</Button>
                     </div>
                 </div>
