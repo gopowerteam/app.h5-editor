@@ -122,7 +122,7 @@ function onLoad(id) {
 }
 
 function onBack() {
-    router.back()
+    router.push('/page-center')
 }
 
 onMount(() => {

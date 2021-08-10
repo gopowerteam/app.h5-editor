@@ -2,6 +2,8 @@
     <PageContainer title="页面预览" layout="workspace">
         <svelte:fragment slot="action">
             <Button size="small" on:click="{onExportImage}">导出图片</Button>
+            <Button kind="secondary" size="small" on:click="{onBack}"
+                >返回</Button>
         </svelte:fragment>
         <div
             id="canvas-container"
@@ -110,6 +112,10 @@ function onExportImage() {
     })
 
     download(dataURL, `${Date.now()}.png`)
+}
+
+function onBack() {
+    router.push('/page-center')
 }
 
 onMount(() => {
