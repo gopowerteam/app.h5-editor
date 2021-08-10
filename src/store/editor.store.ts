@@ -26,6 +26,7 @@ import type { TextWidget } from '@/editor/model/text-widget'
 import type { ImageWidget } from '@/editor/model/image-widget'
 import { appConfig } from '@/config/app.config'
 import * as R from 'ramda'
+import { getBase64FromUrl } from '@/shared/services/util.service'
 
 type pageConfig = {
     background: string
@@ -350,11 +351,14 @@ function onRerenderStage(state: EditorState) {
         const target = stage.findOne('.background') as Konva.Shape
 
         const image = new Image()
-        image.crossOrigin = 'Anonymous'
+
         image.onload = () => {
             target.fill('')
             target.fillPatternImage(image)
         }
-        image.src = page.background
+
+        getBase64FromUrl(page.background).then((data: string) => {
+            image.src = data
+        })
     }
 }
