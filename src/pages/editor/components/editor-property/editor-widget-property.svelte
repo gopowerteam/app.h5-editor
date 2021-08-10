@@ -12,7 +12,7 @@
                 </AccordionItem>
             {/if}
             {#if widgetType === 'Image'}
-                <AccordionItem title="文本属性" open>
+                <AccordionItem title="图片属性" open>
                     <ImageWidgetProerpty />
                 </AccordionItem>
             {/if}
