@@ -1,5 +1,5 @@
 import { createWidget } from '@/editor/data'
-import type { WidgetType } from '@/editor/enums'
+import type { WidgetParams } from '@/editor/data'
 import { Widget } from '@/editor/model/widget'
 import {
     addWidget,
@@ -84,7 +84,7 @@ export interface EditorEvents {
     updateTitle: string
     updateZindex: void
     updateZoom: number
-    createWidget: Widget | WidgetType
+    createWidget: Widget | WidgetParams
     deleteWidget: string | string[]
     backward: void
     forward: void
@@ -242,9 +242,9 @@ function onUpdateWidget(state: EditorState, widget: Partial<Widget>) {
  * @param value
  * @returns
  */
-function onCreateWidget(state: EditorState, value: Widget | WidgetType) {
+function onCreateWidget(state: EditorState, value: Widget | WidgetParams) {
     const { stage, widgets } = state
-    // 创建组件数据a
+    // 创建组件数据
     const data = value instanceof Widget ? value : createWidget(value)
     // 创建组件
     const widget = renderWidget(data)

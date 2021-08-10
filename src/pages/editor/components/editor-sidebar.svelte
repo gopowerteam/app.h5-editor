@@ -15,7 +15,7 @@
             {#each currentWidgets as widget}
                 <div
                     on:click="{() =>
-                        onCreateWidget(widget.event, widget.before)}"
+                        onCreateWidget(widget.params, widget.before)}"
                     class="widget bg-gray-100 hover:bg-gray-50 hover:text-blue-500 cursor-pointer">
                     <svelte:component this="{widget.icon}" />
                     <div class="pt-2 text-xs">{widget.label}</div>
@@ -53,17 +53,22 @@
 </style>
 
 <script lang="ts">
-import { WidgetType } from '@/editor/enums'
+import { QuoteType, WidgetType } from '@/editor/enums'
 import SettingsAdjust from 'carbon-icons-svelte/lib/SettingsAdjust24'
 import MediaLibrary from 'carbon-icons-svelte/lib/MediaLibrary24'
 import TextScale from 'carbon-icons-svelte/lib/TextScale20'
 import Picture from 'carbon-icons-svelte/lib/Image20'
+import Email from 'carbon-icons-svelte/lib/Email20'
+import UserAvatar from 'carbon-icons-svelte/lib/UserAvatar20'
+
 import { useStore } from '@/store'
 import * as R from 'ramda'
 import { useModal } from '@gopowerteam/svelte-modal'
 import UploadCard from '@/shared/components/upload-card.svelte'
 import { createWidget } from '@/editor/data'
-import { appConfig } from '@/config/app.config'
+import type { WidgetParams } from '@/editor/data'
+import type { Widget } from '@/editor/model/widget'
+
 const modal = useModal()
 
 const { dispatch } = useStore((state) => state.editor)
@@ -71,23 +76,57 @@ let currentMenu = 'base'
 
 $: currentWidgets = widgetMenus.find((x) => x.name === currentMenu).widgets
 
+type WidgetConfig = {
+    label: string
+    params: WidgetParams
+    icon: any
+    before?: () => WidgetParams | Widget | Promise<WidgetParams | Widget>
+}
+
 // 基础类组件
-const baseWidgets = [
+const baseWidgets: WidgetConfig[] = [
     {
         label: '文字',
-        event: WidgetType.text,
+        params: {
+            widgetType: WidgetType.text
+        },
         icon: TextScale
     },
     {
         label: '图片',
-        event: WidgetType.image,
+        params: {
+            widgetType: WidgetType.image
+        },
         icon: Picture,
         before: onbeforeCreateImage
     }
 ]
 
 // 引用类组件
-const quoteWidgets = []
+const quoteWidgets: WidgetConfig[] = [
+    {
+        label: '姓名',
+        params: {
+            widgetType: WidgetType.text,
+            quoteType: QuoteType.username,
+            widgetData: {
+                text: '<用户名>'
+            }
+        },
+        icon: UserAvatar
+    },
+    {
+        label: '邮箱',
+        params: {
+            widgetType: WidgetType.text,
+            quoteType: QuoteType.email,
+            widgetData: {
+                text: '<用户邮箱>'
+            }
+        },
+        icon: Email
+    }
+]
 
 const widgetMenus = [
     {
@@ -117,7 +156,12 @@ async function onbeforeCreateImage() {
         .then(({ url }: { url? } = {}) => {
             if (!url) return
             // 创建图片组件数据
-            const widget = createWidget(WidgetType.image, url)
+            const widget = createWidget({
+                widgetType: WidgetType.image,
+                widgetData: {
+                    url
+                }
+            })
 
             const image = new Image()
 
@@ -127,15 +171,14 @@ async function onbeforeCreateImage() {
                     widget.property.height = image.height
                     resolve(widget)
                 }
-
                 image.src = url
             })
         })
 }
 
-async function onCreateWidget(event, before) {
+async function onCreateWidget(params, before) {
     const action = before || R.identity
-    const value = await action(event)
+    const value = await action(params)
 
     if (value) {
         dispatch('createWidget', value)

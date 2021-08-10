@@ -13,6 +13,8 @@ import { getLayers } from './stage'
 import { renderImageWidget } from './widgets/image.render'
 import { renderTextWidget } from './widgets/text.render'
 import { store } from '@/store'
+import { generateQuote } from './quote'
+import type { TextWidget } from '../model/text-widget'
 
 /**
  * 渲染规则
@@ -27,17 +29,21 @@ const renderRules = {
  * @param widget
  * @returns
  */
-export function renderWidget(data: Widget) {
+export function renderWidget<T extends Widget>(widget: T) {
     // 获取渲染函数
-    const render = renderRules[data.widgetType]
+    const render = renderRules[widget.widgetType]
     const { preview } = store.get()
 
     if (!render) {
         throw Error('组件类型不存在')
     }
 
+    if (preview && widget.quoteType) {
+        generateQuote(widget)
+    }
+
     // 获取渲染器
-    const node = render(data as any)
+    const node = render(widget as any)
     // 开启拖拽
     node.draggable(!preview)
 

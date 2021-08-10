@@ -29,10 +29,8 @@ function createImageProperty(url) {
     return property
 }
 
-export function createImageWidget(url: string) {
+export function createImageWidget({ url }: { url: string }) {
     const widget = new ImageWidget()
-
-    //     widget.quoteType = quoteType
 
     widget.property = createWidgetProperty()
 

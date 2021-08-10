@@ -1,5 +1,6 @@
 import type { QuoteType, WidgetType } from '@/editor/enums'
 import { Type } from 'class-transformer'
+import { QuoteData } from './quote-data'
 import { WidgetProperty } from './widget-proerpty'
 
 export class Widget {
@@ -11,6 +12,9 @@ export class Widget {
     public widgetType: WidgetType
 
     public quoteType?: QuoteType
+
+    @Type(() => QuoteData)
+    public quoteData?: QuoteData
 
     @Type(() => WidgetProperty)
     public property: WidgetProperty

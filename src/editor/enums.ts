@@ -4,7 +4,8 @@ export enum WidgetType {
 }
 
 export enum QuoteType {
-    username = 'USERNAME'
+    username = 'USERNAME',
+    email = 'EMAIL'
 }
 
 export enum TextWidgetEvent {

@@ -27,7 +27,7 @@ export function renderTextWidget(widget: TextWidget) {
     })
 
     // 设置编辑功能
-    if (!preview) {
+    if (!preview && !widget.quoteType) {
         setupEditable(node)
     }
 

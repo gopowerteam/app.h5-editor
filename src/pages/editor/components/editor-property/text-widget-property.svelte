@@ -1,10 +1,12 @@
 <template>
     <Form labelWidth="{80}" layout="float">
-        <FormItem label="文本内容">
-            <TextArea
-                bind:value="{property.text}"
-                on:change="{onPropertyChange}" />
-        </FormItem>
+        {#if !currentWidget.quoteType}
+            <FormItem label="文本内容">
+                <TextArea
+                    bind:value="{property.text}"
+                    on:change="{onPropertyChange}" />
+            </FormItem>
+        {/if}
         <FormItem label="文本大小">
             <NumberInput
                 bind:value="{property.fontSize}"
@@ -81,7 +83,7 @@ import type { TextWidget } from '@/editor/model/text-widget'
 import ColorPicker from '@/shared/components/color-picker.svelte'
 import type { TextProperty } from '@/editor/model/text-property'
 import { useModal } from '@gopowerteam/svelte-modal'
-import { textAlignMethods, fontStyleMethods } from '@/editor/enums'
+import { textAlignMethods, fontStyleMethods, QuoteType } from '@/editor/enums'
 
 const modal = useModal()
 const { selected, widgets, dispatch, stage } = useStore((state) => state.editor)
