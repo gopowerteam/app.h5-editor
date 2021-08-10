@@ -25,7 +25,7 @@ function createTextProperty(text) {
     property.fontFamily = 'Arial'
     property.align = 'left'
     property.fontSize = 32
-    property.fontStyle = ''
+    property.fontStyle = 'normal'
     property.text = text
 
     return property

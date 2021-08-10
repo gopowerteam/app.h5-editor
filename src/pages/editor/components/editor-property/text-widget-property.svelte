@@ -32,9 +32,22 @@
                 )}"
                 on:change="{onChangeTextAlign}"
                 bind:value="{property.align}">
-                <Switch text="左对齐" value="left" />
-                <Switch text="居中" value="center" />
-                <Switch text="右对齐" value="right" />
+                {#each textAlignMethods as method}
+                    <Switch text="{method.label}" value="{method.value}" />
+                {/each}
+            </ContentSwitcher>
+        </FormItem>
+        <FormItem label="文本样式">
+            <ContentSwitcher
+                size="sm"
+                selectedIndex="{fontStyleMethods.findIndex(
+                    (x) => x.value === property.fontStyle
+                )}"
+                on:change="{onChangeFontStyle}"
+                bind:value="{property.fontStyle}">
+                {#each fontStyleMethods as method}
+                    <Switch text="{method.label}" value="{method.value}" />
+                {/each}
             </ContentSwitcher>
         </FormItem>
     </Form>
@@ -68,7 +81,7 @@ import type { TextWidget } from '@/editor/model/text-widget'
 import ColorPicker from '@/shared/components/color-picker.svelte'
 import type { TextProperty } from '@/editor/model/text-property'
 import { useModal } from '@gopowerteam/svelte-modal'
-import { textAlignMethods } from '@/editor/enums'
+import { textAlignMethods, fontStyleMethods } from '@/editor/enums'
 
 const modal = useModal()
 const { selected, widgets, dispatch, stage } = useStore((state) => state.editor)
@@ -170,6 +183,11 @@ function renderWidgetProperty() {
  */
 function onChangeTextAlign({ detail }) {
     property.align = textAlignMethods[detail].value
+    onPropertyChange()
+}
+
+function onChangeFontStyle({ detail }) {
+    property.fontStyle = fontStyleMethods[detail].value
     onPropertyChange()
 }
 

@@ -30,3 +30,22 @@ export const textAlignMethods = [
         value: 'right'
     }
 ]
+
+export const fontStyleMethods = [
+    {
+        label: '正常',
+        value: 'normal'
+    },
+    {
+        label: '粗体',
+        value: 'bold'
+    },
+    {
+        label: '斜体',
+        value: 'italic'
+    },
+    {
+        label: '斜粗',
+        value: 'italic bold'
+    }
+]
